@@ -731,6 +731,18 @@ export function App() {
             {view === "roadmap" && "목표 직무에 맞는 핵심 자격과 있으면 좋은 자격을 단계별로 추천합니다."}
             {view === "portfolio" && "이미 보유한 자격증 조합으로 잘 맞는 산업군과 다음 취득 후보를 확인하세요."}
           </p>
+          <div className="page-switcher" aria-label="기능 페이지 이동">
+            {(["explore", "schedule", "roadmap", "portfolio"] as View[]).map((item) => (
+              <button
+                className={view === item ? "is-active" : ""}
+                key={item}
+                onClick={() => navigate(item)}
+                type="button"
+              >
+                {viewLabels[item]}
+              </button>
+            ))}
+          </div>
         </header>
       )}
 

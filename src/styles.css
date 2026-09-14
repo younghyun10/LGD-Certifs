@@ -305,6 +305,33 @@ main {
   font-size: 1.05rem;
 }
 
+.page-switcher {
+  display: flex;
+  gap: 8px;
+  margin-top: 22px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.page-switcher button {
+  min-height: 44px;
+  border: 1px solid #ded8cf;
+  border-radius: 8px;
+  padding: 0 15px;
+  color: #39413f;
+  background: #ffffff;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.page-switcher button.is-active {
+  color: #06201d;
+  background: #45d7c1;
+  border-color: #45d7c1;
+  box-shadow: 0 12px 28px rgba(16, 185, 172, 0.18);
+}
+
 .explorer,
 .roadmap,
 .story,
