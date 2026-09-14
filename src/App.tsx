@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   ClipboardList,
   Cpu,
+  Layers3,
   HeartPulse,
   Leaf,
   Map,
@@ -21,7 +22,7 @@ import {
 } from "lucide-react";
 import type { CatalogResponse, Certification, Industry, IndustryId } from "./types";
 
-type View = "home" | "explore" | "schedule" | "roadmap";
+type View = "home" | "explore" | "schedule" | "roadmap" | "portfolio";
 
 const iconByIndustry: Record<IndustryId, typeof Cpu> = {
   it: Cpu,
@@ -180,12 +181,13 @@ const viewLabels: Record<View, string> = {
   home: "홈",
   explore: "자격증 찾기",
   schedule: "일정 보기",
-  roadmap: "로드맵 추천"
+  roadmap: "로드맵 추천",
+  portfolio: "보유 자격 분석"
 };
 
 function getInitialView(): View {
   const hash = window.location.hash.replace("#", "");
-  if (hash === "explore" || hash === "schedule" || hash === "roadmap") return hash;
+  if (hash === "explore" || hash === "schedule" || hash === "roadmap" || hash === "portfolio") return hash;
   return "home";
 }
 
@@ -270,6 +272,40 @@ function getRecommendationReason(certification: Certification, goal: RoadmapGoal
   );
 
   return matchedKeyword ? `${matchedKeyword} 역량 연결` : "분야 적합도 기반";
+}
+
+function getCertificationText(certification: Certification) {
+  return [
+    certification.name,
+    certification.summary,
+    certification.issuer,
+    certification.level,
+    certification.type,
+    ...certification.fitFor,
+    ...certification.requiredFor
+  ]
+    .join(" ")
+    .toLowerCase();
+}
+
+function getOverlapScore(source: Certification[], target: Certification) {
+  const ownedWords = new Set(
+    source
+      .flatMap((certification) => [
+        certification.name,
+        certification.summary,
+        ...certification.fitFor,
+        ...certification.requiredFor
+      ])
+      .join(" ")
+      .toLowerCase()
+      .split(/[\s,·/()]+/)
+      .filter((word) => word.length > 1)
+  );
+
+  return getCertificationText(target)
+    .split(/[\s,·/()]+/)
+    .filter((word) => ownedWords.has(word)).length;
 }
 
 type CertificationDetailPanelProps = {
@@ -366,6 +402,8 @@ export function App() {
   const [selectedId, setSelectedId] = useState<string>("");
   const [selectedRoadmapId, setSelectedRoadmapId] = useState<string>("");
   const [selectedGoalId, setSelectedGoalId] = useState(roadmapGoals[0].id);
+  const [ownedQuery, setOwnedQuery] = useState("");
+  const [ownedCertificationIds, setOwnedCertificationIds] = useState<string[]>([]);
   const roadmapDetailRef = useRef<HTMLElement | null>(null);
 
   function navigate(nextView: View) {
@@ -403,6 +441,9 @@ export function App() {
 
   const industries = catalog?.industries ?? [];
   const certifications = catalog?.certifications ?? [];
+  const ownedCertifications = certifications.filter((certification) =>
+    ownedCertificationIds.includes(certification.id)
+  );
 
   const filtered = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -481,6 +522,88 @@ export function App() {
       .sort((a, b) => a.date.getTime() - b.date.getTime());
   }, [certifications]);
 
+  const ownedSearchResults = useMemo(() => {
+    const normalizedQuery = ownedQuery.trim().toLowerCase();
+    return certifications
+      .filter((certification) => {
+        if (ownedCertificationIds.includes(certification.id)) return false;
+        if (!normalizedQuery) return true;
+        return getCertificationText(certification).includes(normalizedQuery);
+      })
+      .slice(0, 8);
+  }, [certifications, ownedCertificationIds, ownedQuery]);
+
+  const portfolioIndustryMatches = useMemo(() => {
+    return industries
+      .map((industry) => {
+        const ownedInIndustry = ownedCertifications.filter(
+          (certification) => certification.industryId === industry.id
+        );
+        const crossSignals = ownedCertifications.filter((certification) =>
+          getCertificationText(certification).includes(industry.name.toLowerCase())
+        );
+        const relatedGoals = roadmapGoals.filter((goal) => goal.industryId === industry.id);
+        const goalSignals = relatedGoals.reduce((score, goal) => {
+          return (
+            score +
+            ownedCertifications.reduce((total, certification) => {
+              const text = getCertificationText(certification);
+              return total + goal.keywords.filter((keyword) => text.includes(keyword.toLowerCase())).length;
+            }, 0)
+          );
+        }, 0);
+
+        return {
+          industry,
+          score: ownedInIndustry.length * 36 + crossSignals.length * 10 + goalSignals * 8,
+          ownedCount: ownedInIndustry.length,
+          goalSignals
+        };
+      })
+      .filter((item) => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 4);
+  }, [industries, ownedCertifications]);
+
+  const portfolioRecommendations = useMemo(() => {
+    if (ownedCertifications.length === 0) return [];
+
+    return certifications
+      .filter((certification) => !ownedCertificationIds.includes(certification.id))
+      .map((certification) => {
+        const sameIndustryScore = ownedCertifications.some(
+          (owned) => owned.industryId === certification.industryId
+        )
+          ? 24
+          : 0;
+        const overlapScore = getOverlapScore(ownedCertifications, certification) * 3;
+        const levelBridgeScore =
+          Math.max(...ownedCertifications.map((owned) => levelRank[owned.level])) <=
+          levelRank[certification.level]
+            ? 8
+            : 0;
+
+        return {
+          certification,
+          score: sameIndustryScore + overlapScore + levelBridgeScore
+        };
+      })
+      .filter((item) => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 6);
+  }, [certifications, ownedCertificationIds, ownedCertifications]);
+
+  function addOwnedCertification(certificationId: string) {
+    setOwnedCertificationIds((current) =>
+      current.includes(certificationId) ? current : [...current, certificationId]
+    );
+    setOwnedQuery("");
+  }
+
+  function removeOwnedCertification(certificationId: string) {
+    setOwnedCertificationIds((current) => current.filter((id) => id !== certificationId));
+  }
+
   return (
     <main>
       <nav className={`nav ${view === "home" ? "nav--overlay" : "nav--solid"}`} aria-label="주요 메뉴">
@@ -489,7 +612,7 @@ export function App() {
           <span>CertiMap</span>
         </button>
         <div className="nav__links">
-          {(["explore", "schedule", "roadmap"] as View[]).map((item) => (
+          {(["explore", "schedule", "roadmap", "portfolio"] as View[]).map((item) => (
             <button
               className={view === item ? "is-active" : ""}
               key={item}
@@ -530,6 +653,10 @@ export function App() {
                   <Map size={18} aria-hidden="true" />
                   로드맵 추천
                 </button>
+                <button className="button button--ghost" onClick={() => navigate("portfolio")} type="button">
+                  <Layers3 size={18} aria-hidden="true" />
+                  보유 자격 분석
+                </button>
               </div>
             </div>
           </section>
@@ -565,6 +692,11 @@ export function App() {
               <strong>로드맵 추천</strong>
               <span>목표 직무에 맞는 핵심 자격과 보완 자격을 추천받습니다.</span>
             </button>
+            <button onClick={() => navigate("portfolio")} type="button">
+              <Layers3 aria-hidden="true" />
+              <strong>보유 자격 분석</strong>
+              <span>이미 취득한 자격증을 바탕으로 산업군과 다음 자격을 추천합니다.</span>
+            </button>
           </section>
 
           <section className="story" id="story">
@@ -591,11 +723,13 @@ export function App() {
             {view === "explore" && "자격증 찾기"}
             {view === "schedule" && "시험 일정 보기"}
             {view === "roadmap" && "로드맵 추천"}
+            {view === "portfolio" && "보유 자격 분석"}
           </h1>
           <p>
             {view === "explore" && "분야와 키워드로 필요한 자격증을 빠르게 좁혀보세요."}
             {view === "schedule" && "접수 기간, 시험일, 발표일을 자격증별로 한눈에 확인하세요."}
             {view === "roadmap" && "목표 직무에 맞는 핵심 자격과 있으면 좋은 자격을 단계별로 추천합니다."}
+            {view === "portfolio" && "이미 보유한 자격증 조합으로 잘 맞는 산업군과 다음 취득 후보를 확인하세요."}
           </p>
         </header>
       )}
@@ -798,6 +932,164 @@ export function App() {
           </div>
         </div>
       </section>
+      )}
+
+      {view === "portfolio" && (
+        <section className="portfolio">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Credential Portfolio</p>
+              <h2>내 자격증 기반 추천</h2>
+            </div>
+            <p className="section-copy">
+              보유 자격증을 등록하면 CertiMap이 역량 키워드와 산업 분포를 분석해 잘 맞는 산업군과
+              다음에 준비하기 좋은 자격증을 추천합니다.
+            </p>
+          </div>
+
+          <div className="portfolio-layout">
+            <section className="portfolio-builder" aria-label="보유 자격증 등록">
+              <label className="search-box">
+                <Search size={18} aria-hidden="true" />
+                <input
+                  value={ownedQuery}
+                  onChange={(event) => setOwnedQuery(event.target.value)}
+                  placeholder="취득한 자격증 검색"
+                />
+              </label>
+
+              <div className="owned-search-results">
+                {ownedSearchResults.map((certification) => {
+                  const industry = industries.find((item) => item.id === certification.industryId);
+                  return (
+                    <button
+                      key={certification.id}
+                      type="button"
+                      onClick={() => addOwnedCertification(certification.id)}
+                    >
+                      <span>{industry?.name}</span>
+                      <strong>{certification.name}</strong>
+                      <small>{certification.level} · {certification.type}</small>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            <section className="owned-panel" aria-label="등록된 보유 자격증">
+              <div className="panel-heading">
+                <div>
+                  <p className="eyebrow">My Credentials</p>
+                  <h3>등록한 자격증</h3>
+                </div>
+                <strong>{ownedCertifications.length}개</strong>
+              </div>
+
+              {ownedCertifications.length > 0 ? (
+                <div className="owned-list">
+                  {ownedCertifications.map((certification) => {
+                    const industry = industries.find((item) => item.id === certification.industryId);
+                    return (
+                      <div className="owned-chip" key={certification.id}>
+                        <span>{industry?.name}</span>
+                        <strong>{certification.name}</strong>
+                        <button type="button" onClick={() => removeOwnedCertification(certification.id)}>
+                          제거
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="empty-copy">
+                  예시로 SQLD, 정보처리기사, 컴퓨터활용능력 같은 자격증을 검색해서 추가해보세요.
+                </p>
+              )}
+            </section>
+          </div>
+
+          {ownedCertifications.length > 0 && (
+            <div className="portfolio-results">
+              <section className="industry-match-panel">
+                <div className="panel-heading">
+                  <div>
+                    <p className="eyebrow">Industry Fit</p>
+                    <h3>잘 맞는 산업군</h3>
+                  </div>
+                </div>
+                <div className="industry-match-list">
+                  {portfolioIndustryMatches.map(({ industry, score, ownedCount, goalSignals }) => {
+                    const Icon = iconByIndustry[industry.id];
+                    return (
+                      <article key={industry.id}>
+                        <Icon aria-hidden="true" />
+                        <div>
+                          <strong>{industry.name}</strong>
+                          <p>{industry.tagline}</p>
+                        </div>
+                        <span>{score}점</span>
+                        <small>
+                          보유 {ownedCount}개 · 직무 연결 {goalSignals}개
+                        </small>
+                      </article>
+                    );
+                  })}
+                </div>
+              </section>
+
+              <section className="next-cert-panel">
+                <div className="panel-heading">
+                  <div>
+                    <p className="eyebrow">Next Credentials</p>
+                    <h3>연관 자격증 추천</h3>
+                  </div>
+                </div>
+                <div className="next-cert-grid">
+                  {portfolioRecommendations.map(({ certification, score }) => {
+                    const industry = industries.find((item) => item.id === certification.industryId);
+                    const schedule = getNextSchedule(certification);
+                    return (
+                      <article className="recommendation-card" key={certification.id}>
+                        <div className="recommendation-card__top">
+                          <span>
+                            <Star size={15} aria-hidden="true" />
+                            보유 역량과 연결
+                          </span>
+                          <strong>{score}</strong>
+                        </div>
+                        <h3>{certification.name}</h3>
+                        <p>{certification.summary}</p>
+                        <div className="recommendation-card__meta">
+                          <span>{industry?.name}</span>
+                          <span>{certification.level}</span>
+                          <span>{formatDate(schedule.examDate)}</span>
+                        </div>
+                        <div className="recommendation-card__actions">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedIndustry(certification.industryId);
+                              setSelectedId(certification.id);
+                              setQuery("");
+                              navigate("explore");
+                            }}
+                          >
+                            <Target size={16} aria-hidden="true" />
+                            상세 보기
+                          </button>
+                          <a href={certification.officialUrl} target="_blank" rel="noreferrer">
+                            공식 사이트
+                            <ArrowUpRight size={15} aria-hidden="true" />
+                          </a>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              </section>
+            </div>
+          )}
+        </section>
       )}
 
       {view === "schedule" && (

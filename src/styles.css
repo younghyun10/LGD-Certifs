@@ -250,7 +250,7 @@ main {
   width: min(1180px, calc(100% - 40px));
   margin: 80px auto 96px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 14px;
 }
 
@@ -308,6 +308,7 @@ main {
 .explorer,
 .roadmap,
 .story,
+.portfolio,
 .schedule-page {
   width: min(1180px, calc(100% - 40px));
   margin: 36px auto 96px;
@@ -916,6 +917,189 @@ main {
   cursor: pointer;
 }
 
+.portfolio-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.85fr) minmax(0, 1.15fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.portfolio-builder,
+.owned-panel,
+.industry-match-panel,
+.next-cert-panel {
+  border: 1px solid #ded8cf;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.portfolio-builder,
+.owned-panel {
+  padding: 18px;
+}
+
+.owned-search-results {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  max-height: 410px;
+  overflow: auto;
+}
+
+.owned-search-results button {
+  display: grid;
+  gap: 5px;
+  padding: 14px;
+  border: 1px solid #ece7de;
+  border-radius: 8px;
+  background: #fffdf8;
+  text-align: left;
+  cursor: pointer;
+}
+
+.owned-search-results button:hover {
+  border-color: #12b8a9;
+  box-shadow: 0 10px 28px rgba(18, 42, 39, 0.08);
+}
+
+.owned-search-results span,
+.owned-chip span,
+.industry-match-list small {
+  color: #0e827a;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.owned-search-results strong {
+  color: #111b1a;
+}
+
+.owned-search-results small,
+.empty-copy {
+  color: #606966;
+  line-height: 1.6;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.panel-heading h3 {
+  margin: 0;
+  color: #111b1a;
+  font-size: 1.45rem;
+}
+
+.panel-heading > strong {
+  display: grid;
+  place-items: center;
+  min-width: 58px;
+  min-height: 42px;
+  border-radius: 8px;
+  color: #06201d;
+  background: #45d7c1;
+}
+
+.owned-list {
+  display: grid;
+  gap: 10px;
+}
+
+.owned-chip {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 12px;
+  align-items: center;
+  padding: 14px;
+  border-radius: 8px;
+  background: #f1eee6;
+}
+
+.owned-chip span,
+.owned-chip strong {
+  grid-column: 1;
+}
+
+.owned-chip strong {
+  color: #17201f;
+}
+
+.owned-chip button {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  min-height: 36px;
+  border: 1px solid #ded8cf;
+  border-radius: 8px;
+  padding: 0 12px;
+  color: #39413f;
+  background: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.portfolio-results {
+  display: grid;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.industry-match-panel,
+.next-cert-panel {
+  padding: 22px;
+}
+
+.industry-match-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.industry-match-list article {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid #ece7de;
+  border-radius: 8px;
+  background: #fffdf8;
+}
+
+.industry-match-list svg {
+  width: 28px;
+  height: 28px;
+  color: #0e827a;
+}
+
+.industry-match-list strong {
+  color: #111b1a;
+}
+
+.industry-match-list p {
+  margin: 5px 0 0;
+  color: #606966;
+  line-height: 1.55;
+}
+
+.industry-match-list article > span {
+  color: #a65d11;
+  font-weight: 900;
+}
+
+.industry-match-list small {
+  grid-column: 2 / -1;
+}
+
+.next-cert-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
 .story {
   display: grid;
   grid-template-columns: 0.9fr 1.1fr;
@@ -947,6 +1131,7 @@ main {
   .schedule-page__tools,
   .workspace,
   .roadmap-panel,
+  .portfolio-layout,
   .home-actions,
   .story,
   .detail-columns {
@@ -971,6 +1156,11 @@ main {
 
   .cert-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .industry-match-list,
+  .next-cert-grid {
+    grid-template-columns: 1fr;
   }
 
   .quick-stats div {
@@ -1013,6 +1203,7 @@ main {
   .explorer,
   .roadmap,
   .schedule-page,
+  .portfolio,
   .home-actions,
   .story {
     width: min(100% - 28px, 1180px);
@@ -1042,6 +1233,20 @@ main {
 
   .cert-list {
     grid-template-columns: 1fr;
+  }
+
+  .owned-chip,
+  .industry-match-list article {
+    grid-template-columns: 1fr;
+  }
+
+  .owned-chip button,
+  .industry-match-list small {
+    grid-column: 1;
+  }
+
+  .owned-chip button {
+    grid-row: auto;
   }
 
   .recommendation-card {
