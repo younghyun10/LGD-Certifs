@@ -492,6 +492,12 @@ main {
   cursor: pointer;
 }
 
+.roadmap-step__items button.is-active {
+  color: #06201d;
+  background: #45d7c1;
+  border-color: #45d7c1;
+}
+
 .recommendation-grid {
   grid-column: 1 / -1;
   display: grid;
@@ -504,6 +510,11 @@ main {
   flex-direction: column;
   min-height: 286px;
   padding: 16px;
+}
+
+.recommendation-card.is-selected {
+  border-color: #12b8a9;
+  box-shadow: 0 18px 42px rgba(18, 42, 39, 0.11);
 }
 
 .recommendation-card__top {
@@ -649,13 +660,13 @@ main {
 
 .workspace {
   display: grid;
-  grid-template-columns: minmax(280px, 0.78fr) minmax(0, 1.42fr);
   gap: 18px;
   align-items: start;
 }
 
 .cert-list {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -713,6 +724,16 @@ main {
   border-radius: 8px;
   background: #fffdf8;
   box-shadow: 0 20px 54px rgba(33, 30, 24, 0.09);
+}
+
+.detail-panel--featured {
+  background:
+    linear-gradient(135deg, rgba(216, 248, 240, 0.68), rgba(255, 253, 248, 0) 46%),
+    #fffdf8;
+}
+
+.roadmap-detail {
+  grid-column: 1 / -1;
 }
 
 .detail-panel__top {
@@ -947,6 +968,10 @@ main {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .cert-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .quick-stats div {
     border-right: 0;
     border-bottom: 1px solid #e9e4dc;
@@ -1011,6 +1036,10 @@ main {
   }
 
   .recommendation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cert-list {
     grid-template-columns: 1fr;
   }
 

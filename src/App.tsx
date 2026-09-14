@@ -272,12 +272,97 @@ function getRecommendationReason(certification: Certification, goal: RoadmapGoal
   return matchedKeyword ? `${matchedKeyword} 역량 연결` : "분야 적합도 기반";
 }
 
+type CertificationDetailPanelProps = {
+  certification: Certification;
+  industryName?: string;
+  className?: string;
+};
+
+function CertificationDetailPanel({
+  certification,
+  industryName,
+  className = ""
+}: CertificationDetailPanelProps) {
+  return (
+    <article className={`detail-panel ${className}`}>
+      <div className="detail-panel__top">
+        <div>
+          <p className="eyebrow">{industryName}</p>
+          <h2>{certification.name}</h2>
+          <p>{certification.summary}</p>
+        </div>
+        <a className="button button--primary" href={certification.officialUrl} target="_blank" rel="noreferrer">
+          공식 홈페이지
+          <ArrowUpRight size={17} aria-hidden="true" />
+        </a>
+      </div>
+
+      <div className="info-grid">
+        <div>
+          <ClipboardList aria-hidden="true" />
+          <span>시행기관</span>
+          <strong>{certification.issuer}</strong>
+        </div>
+        <div>
+          <BookOpenCheck aria-hidden="true" />
+          <span>평균 준비</span>
+          <strong>{certification.averagePrepWeeks}주</strong>
+        </div>
+        <div>
+          <BadgeCheck aria-hidden="true" />
+          <span>응시료</span>
+          <strong>{certification.examFee}</strong>
+        </div>
+      </div>
+
+      <div className="detail-columns">
+        <section>
+          <h3>주요 활용 직무</h3>
+          <div className="pill-list">
+            {certification.fitFor.map((item) => (
+              <span key={item}>{item}</span>
+            ))}
+          </div>
+        </section>
+        <section>
+          <h3>검증 역량</h3>
+          <ul className="check-list">
+            {certification.requiredFor.map((item) => (
+              <li key={item}>
+                <CheckCircle2 size={17} aria-hidden="true" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+
+      <section className="schedule-table" aria-label="시험 일정">
+        <div className="schedule-table__head">
+          <h3>시험 일정</h3>
+          <span>{certification.passingStandard}</span>
+        </div>
+        {certification.schedules.map((schedule) => (
+          <div className="schedule-row" key={`${certification.id}-${schedule.round}`}>
+            <strong>{schedule.round}</strong>
+            <span>{examTypeLabel[schedule.examType]}</span>
+            <span>접수 {formatDate(schedule.registrationStart)}-{formatDate(schedule.registrationEnd)}</span>
+            <span>시험 {formatDate(schedule.examDate)}</span>
+            <span>발표 {formatDate(schedule.resultDate)}</span>
+          </div>
+        ))}
+      </section>
+    </article>
+  );
+}
+
 export function App() {
   const [catalog, setCatalog] = useState<CatalogResponse | null>(null);
   const [view, setView] = useState<View>(getInitialView);
   const [selectedIndustry, setSelectedIndustry] = useState<IndustryId | "all">("all");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string>("");
+  const [selectedRoadmapId, setSelectedRoadmapId] = useState<string>("");
   const [selectedGoalId, setSelectedGoalId] = useState(roadmapGoals[0].id);
 
   function navigate(nextView: View) {
@@ -362,6 +447,14 @@ export function App() {
       }))
       .filter((step) => step.items.length > 0);
   }, [roadmapRecommendations]);
+
+  const selectedRoadmapCertification =
+    roadmapRecommendations.find((item) => item.certification.id === selectedRoadmapId)
+      ?.certification ?? roadmapRecommendations[0]?.certification;
+
+  const selectedRoadmapIndustryInfo = industries.find(
+    (industry) => industry.id === selectedRoadmapCertification?.industryId
+  );
 
   const scheduleItems = useMemo(() => {
     return certifications
@@ -550,13 +643,9 @@ export function App() {
                     {step.items.map((certification) => (
                       <button
                         type="button"
+                        className={selectedRoadmapCertification?.id === certification.id ? "is-active" : ""}
                         key={certification.id}
-                        onClick={() => {
-                          setSelectedIndustry(certification.industryId);
-                          setSelectedId(certification.id);
-                          setQuery("");
-                          navigate("explore");
-                        }}
+                        onClick={() => setSelectedRoadmapId(certification.id)}
                       >
                         {certification.name}
                       </button>
@@ -571,7 +660,12 @@ export function App() {
             {roadmapRecommendations.slice(0, 5).map(({ certification, score }) => {
               const schedule = getNextSchedule(certification);
               return (
-                <article className="recommendation-card" key={certification.id}>
+                <article
+                  className={`recommendation-card ${
+                    selectedRoadmapCertification?.id === certification.id ? "is-selected" : ""
+                  }`}
+                  key={certification.id}
+                >
                   <div className="recommendation-card__top">
                     <span>
                       <Star size={15} aria-hidden="true" />
@@ -589,12 +683,7 @@ export function App() {
                   <div className="recommendation-card__actions">
                     <button
                       type="button"
-                      onClick={() => {
-                        setSelectedIndustry(certification.industryId);
-                        setSelectedId(certification.id);
-                        setQuery("");
-                        navigate("explore");
-                      }}
+                      onClick={() => setSelectedRoadmapId(certification.id)}
                     >
                       <Target size={16} aria-hidden="true" />
                       상세 보기
@@ -608,6 +697,14 @@ export function App() {
               );
             })}
           </div>
+
+          {selectedRoadmapCertification && (
+            <CertificationDetailPanel
+              certification={selectedRoadmapCertification}
+              industryName={selectedRoadmapIndustryInfo?.name}
+              className="detail-panel--featured roadmap-detail"
+            />
+          )}
         </div>
       </section>
       )}
@@ -654,6 +751,14 @@ export function App() {
         </div>
 
         <div className="workspace">
+          {selectedCertification && (
+            <CertificationDetailPanel
+              certification={selectedCertification}
+              industryName={selectedIndustryInfo?.name}
+              className="detail-panel--featured"
+            />
+          )}
+
           <div className="cert-list" aria-label="자격증 목록">
             {filtered.map((certification) => {
               const schedule = getNextSchedule(certification);
@@ -677,78 +782,6 @@ export function App() {
               );
             })}
           </div>
-
-          {selectedCertification && (
-            <article className="detail-panel" id="schedule">
-              <div className="detail-panel__top">
-                <div>
-                  <p className="eyebrow">{selectedIndustryInfo?.name}</p>
-                  <h2>{selectedCertification.name}</h2>
-                  <p>{selectedCertification.summary}</p>
-                </div>
-                <a className="button button--primary" href={selectedCertification.officialUrl} target="_blank" rel="noreferrer">
-                  공식 홈페이지
-                  <ArrowUpRight size={17} aria-hidden="true" />
-                </a>
-              </div>
-
-              <div className="info-grid">
-                <div>
-                  <ClipboardList aria-hidden="true" />
-                  <span>시행기관</span>
-                  <strong>{selectedCertification.issuer}</strong>
-                </div>
-                <div>
-                  <BookOpenCheck aria-hidden="true" />
-                  <span>평균 준비</span>
-                  <strong>{selectedCertification.averagePrepWeeks}주</strong>
-                </div>
-                <div>
-                  <BadgeCheck aria-hidden="true" />
-                  <span>응시료</span>
-                  <strong>{selectedCertification.examFee}</strong>
-                </div>
-              </div>
-
-              <div className="detail-columns">
-                <section>
-                  <h3>주요 활용 직무</h3>
-                  <div className="pill-list">
-                    {selectedCertification.fitFor.map((item) => (
-                      <span key={item}>{item}</span>
-                    ))}
-                  </div>
-                </section>
-                <section>
-                  <h3>검증 역량</h3>
-                  <ul className="check-list">
-                    {selectedCertification.requiredFor.map((item) => (
-                      <li key={item}>
-                        <CheckCircle2 size={17} aria-hidden="true" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              </div>
-
-              <section className="schedule-table" aria-label="시험 일정">
-                <div className="schedule-table__head">
-                  <h3>시험 일정</h3>
-                  <span>{selectedCertification.passingStandard}</span>
-                </div>
-                {selectedCertification.schedules.map((schedule) => (
-                  <div className="schedule-row" key={`${selectedCertification.id}-${schedule.round}`}>
-                    <strong>{schedule.round}</strong>
-                    <span>{examTypeLabel[schedule.examType]}</span>
-                    <span>접수 {formatDate(schedule.registrationStart)}-{formatDate(schedule.registrationEnd)}</span>
-                    <span>시험 {formatDate(schedule.examDate)}</span>
-                    <span>발표 {formatDate(schedule.resultDate)}</span>
-                  </div>
-                ))}
-              </section>
-            </article>
-          )}
         </div>
       </section>
       )}
