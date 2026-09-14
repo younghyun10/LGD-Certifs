@@ -11,10 +11,13 @@ import {
   Cpu,
   HeartPulse,
   Leaf,
+  Map,
   Palette,
   Search,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  Star,
+  Target
 } from "lucide-react";
 import type { CatalogResponse, Certification, Industry, IndustryId } from "./types";
 
@@ -32,6 +35,143 @@ const examTypeLabel = {
   practical: "실기",
   portfolio: "포트폴리오",
   interview: "면접"
+};
+
+type RoadmapGoal = {
+  id: string;
+  industryId: IndustryId;
+  label: string;
+  description: string;
+  keywords: string[];
+  mustHave: string[];
+  niceToHave: string[];
+};
+
+const roadmapGoals: RoadmapGoal[] = [
+  {
+    id: "data-analyst",
+    industryId: "it",
+    label: "데이터 분석가",
+    description: "SQL, 통계, 분석 모델링을 바탕으로 데이터 기반 의사결정을 지원하는 직무",
+    keywords: ["데이터", "SQL", "분석", "통계", "BI", "모델"],
+    mustHave: ["sqld", "adp"],
+    niceToHave: ["topcit", "azure-fundamentals"]
+  },
+  {
+    id: "cloud-engineer",
+    industryId: "it",
+    label: "클라우드 엔지니어",
+    description: "클라우드 인프라를 설계하고 운영 안정성, 보안, 비용을 함께 관리하는 직무",
+    keywords: ["클라우드", "AWS", "Azure", "Google", "인프라", "네트워크", "리눅스", "보안"],
+    mustHave: ["azure-fundamentals", "cloud-architect"],
+    niceToHave: ["google-cloud-architect", "linux-master", "network-manager"]
+  },
+  {
+    id: "security-engineer",
+    industryId: "it",
+    label: "보안 엔지니어",
+    description: "취약점 분석, 보안 정책, 침해 대응과 인프라 보호를 담당하는 직무",
+    keywords: ["보안", "침해", "취약점", "네트워크", "리눅스", "시스템"],
+    mustHave: ["information-security-engineer", "network-manager"],
+    niceToHave: ["linux-master", "topcit"]
+  },
+  {
+    id: "hospital-admin",
+    industryId: "health",
+    label: "병원 행정·원무",
+    description: "의료기관 원무, 보험 청구, 진료정보 관리와 병원 행정 흐름을 다루는 직무",
+    keywords: ["병원", "행정", "원무", "보험", "의료정보", "진료정보", "청구"],
+    mustHave: ["medical-admin", "health-records-analyst"],
+    niceToHave: ["public-health-educator", "computer-literacy"]
+  },
+  {
+    id: "clinical-support",
+    industryId: "health",
+    label: "의료 현장 지원",
+    description: "검사, 영상, 재활, 돌봄 등 의료 현장 실무를 지원하는 직군",
+    keywords: ["검사", "영상", "재활", "간호", "돌봄", "환자", "치료"],
+    mustHave: ["nursing-assistant", "clinical-laboratory-technologist"],
+    niceToHave: ["radiologic-technologist", "physical-therapist", "care-worker"]
+  },
+  {
+    id: "site-safety",
+    industryId: "construction",
+    label: "건설·현장 안전관리",
+    description: "공사 현장의 안전, 품질, 공정과 법정 안전관리 체계를 운영하는 직무",
+    keywords: ["안전", "건설", "현장", "시공", "품질", "소방", "전기"],
+    mustHave: ["construction-safety-engineer", "industrial-safety"],
+    niceToHave: ["fire-safety-engineer", "construction-materials-engineer", "electric-engineer"]
+  },
+  {
+    id: "architecture-civil",
+    industryId: "construction",
+    label: "건축·토목 기술자",
+    description: "건축·토목 설계, 시공, 측량, 설비와 현장 품질을 다루는 기술 직군",
+    keywords: ["건축", "토목", "측량", "설비", "시공", "재료", "실내"],
+    mustHave: ["construction-engineer", "civil-engineer"],
+    niceToHave: ["surveyor-engineer", "architecture-equipment-engineer", "interior-architecture-engineer"]
+  },
+  {
+    id: "accounting-office",
+    industryId: "business",
+    label: "회계·세무 사무",
+    description: "전표 처리, 세무 신고 보조, 결산과 회계 시스템 운용을 맡는 직무",
+    keywords: ["회계", "세무", "전표", "결산", "ERP", "FAT", "세무회계"],
+    mustHave: ["computerized-accounting", "tax-accounting"],
+    niceToHave: ["fat-accounting", "erp-accounting", "computer-literacy"]
+  },
+  {
+    id: "office-operations",
+    industryId: "business",
+    label: "사무·운영·물류",
+    description: "문서, 데이터, 유통, 물류와 운영 프로세스를 관리하는 직무",
+    keywords: ["사무", "문서", "물류", "유통", "운영", "무역", "스프레드시트"],
+    mustHave: ["computer-literacy", "word-processor"],
+    niceToHave: ["logistics-manager", "distribution-manager", "trade-english"]
+  },
+  {
+    id: "esg-environment",
+    industryId: "environment",
+    label: "환경·ESG 관리자",
+    description: "대기·수질·폐기물·온실가스 등 환경 규제와 ESG 데이터를 관리하는 직무",
+    keywords: ["환경", "ESG", "대기", "수질", "폐기물", "온실가스", "토양"],
+    mustHave: ["environment-engineer", "water-pollution-engineer"],
+    niceToHave: ["waste-treatment-engineer", "greenhouse-gas-engineer", "soil-environment-engineer"]
+  },
+  {
+    id: "green-agriculture",
+    industryId: "environment",
+    label: "녹지·산림·친환경 농업",
+    description: "조경, 산림, 유기농업, 식물보호 등 생태 기반 현장을 관리하는 직군",
+    keywords: ["조경", "산림", "농업", "식물", "친환경", "녹지", "생태"],
+    mustHave: ["landscape-engineer", "forest-engineer"],
+    niceToHave: ["organic-agriculture-engineer", "plant-protection-engineer"]
+  },
+  {
+    id: "graphic-designer",
+    industryId: "design",
+    label: "그래픽·브랜드 디자이너",
+    description: "이미지, 색채, 편집, 브랜드 그래픽을 제작하고 디자인 품질을 관리하는 직무",
+    keywords: ["그래픽", "브랜드", "포토샵", "일러스트", "색채", "편집", "시각"],
+    mustHave: ["gtq-photoshop", "colorist"],
+    niceToHave: ["gtqi-illustrator", "visual-communication-engineer", "adobe-photoshop-professional"]
+  },
+  {
+    id: "product-ux-designer",
+    industryId: "design",
+    label: "제품·UX 디자이너",
+    description: "제품, 서비스 경험, 웹 화면과 사용자 흐름을 설계하는 디자인 직군",
+    keywords: ["UX", "서비스", "제품", "웹", "사용자", "경험", "프로토타입"],
+    mustHave: ["ux-researcher", "product-design-engineer"],
+    niceToHave: ["web-design-functional", "gtqid-indesign", "computer-graphics-operation"]
+  }
+];
+
+const levelRank: Record<Certification["level"], number> = {
+  입문: 1,
+  실무: 2,
+  전문: 3,
+  고급: 4
 };
 
 function formatDate(value: string) {
@@ -69,11 +209,60 @@ function requestCatalog(): Promise<CatalogResponse> {
   });
 }
 
+function scoreCertification(certification: Certification, goal: RoadmapGoal) {
+  const content = [
+    certification.name,
+    certification.summary,
+    certification.issuer,
+    certification.level,
+    certification.type,
+    ...certification.fitFor,
+    ...certification.requiredFor
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  const keywordScore = goal.keywords.reduce(
+    (score, keyword) => score + (content.includes(keyword.toLowerCase()) ? 4 : 0),
+    0
+  );
+  const requiredScore = goal.mustHave.includes(certification.id) ? 40 : 0;
+  const optionalScore = goal.niceToHave.includes(certification.id) ? 24 : 0;
+  const industryScore = certification.industryId === goal.industryId ? 12 : 0;
+
+  return requiredScore + optionalScore + industryScore + keywordScore;
+}
+
+function getRecommendationReason(certification: Certification, goal: RoadmapGoal) {
+  if (goal.mustHave.includes(certification.id)) {
+    return "핵심 추천";
+  }
+
+  if (goal.niceToHave.includes(certification.id)) {
+    return "있으면 좋은 보완 자격";
+  }
+
+  const matchedKeyword = goal.keywords.find((keyword) =>
+    [
+      certification.name,
+      certification.summary,
+      ...certification.fitFor,
+      ...certification.requiredFor
+    ]
+      .join(" ")
+      .toLowerCase()
+      .includes(keyword.toLowerCase())
+  );
+
+  return matchedKeyword ? `${matchedKeyword} 역량 연결` : "분야 적합도 기반";
+}
+
 export function App() {
   const [catalog, setCatalog] = useState<CatalogResponse | null>(null);
   const [selectedIndustry, setSelectedIndustry] = useState<IndustryId | "all">("all");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string>("");
+  const [selectedGoalId, setSelectedGoalId] = useState(roadmapGoals[0].id);
 
   useEffect(() => {
     requestCatalog()
@@ -116,6 +305,36 @@ export function App() {
     (industry) => industry.id === selectedCertification?.industryId
   );
 
+  const selectedGoal =
+    roadmapGoals.find((goal) => goal.id === selectedGoalId) ?? roadmapGoals[0];
+
+  const roadmapRecommendations = useMemo(() => {
+    return certifications
+      .map((certification) => ({
+        certification,
+        score: scoreCertification(certification, selectedGoal)
+      }))
+      .filter((item) => item.score > 0)
+      .sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return levelRank[a.certification.level] - levelRank[b.certification.level];
+      })
+      .slice(0, 7);
+  }, [certifications, selectedGoal]);
+
+  const roadmapSteps = useMemo(() => {
+    const labels: Certification["level"][] = ["입문", "실무", "전문", "고급"];
+    return labels
+      .map((level) => ({
+        level,
+        items: roadmapRecommendations
+          .map((recommendation) => recommendation.certification)
+          .filter((certification) => certification.level === level)
+          .slice(0, 3)
+      }))
+      .filter((step) => step.items.length > 0);
+  }, [roadmapRecommendations]);
+
   return (
     <main>
       <section className="hero">
@@ -128,6 +347,7 @@ export function App() {
           </a>
           <div className="nav__links">
             <a href="#explore">탐색</a>
+            <a href="#roadmap">로드맵</a>
             <a href="#schedule">시험 일정</a>
             <a href="#story">브랜드</a>
           </div>
@@ -151,6 +371,10 @@ export function App() {
               <CalendarDays size={18} aria-hidden="true" />
               일정 보기
             </a>
+            <a className="button button--ghost" href="#roadmap">
+              <Map size={18} aria-hidden="true" />
+              로드맵 추천
+            </a>
           </div>
         </div>
       </section>
@@ -165,8 +389,122 @@ export function App() {
           <span>추천 자격증</span>
         </div>
         <div>
-          <strong>2단계</strong>
-          <span>분야 선택 후 공식 사이트 이동</span>
+          <strong>{roadmapGoals.length}</strong>
+          <span>직무 로드맵</span>
+        </div>
+      </section>
+
+      <section className="roadmap" id="roadmap">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Roadmap Recommender</p>
+            <h2>원하는 직무에 맞춘 자격증 로드맵</h2>
+          </div>
+          <p className="section-copy">
+            분야와 직무를 선택하면 현재 데이터베이스에서 핵심 자격과 보완 자격을 자동으로 골라
+            준비 순서까지 정리합니다.
+          </p>
+        </div>
+
+        <div className="roadmap-panel">
+          <div className="roadmap-picker">
+            <label>
+              <span>목표 직무</span>
+              <select
+                value={selectedGoalId}
+                onChange={(event) => setSelectedGoalId(event.target.value)}
+              >
+                {roadmapGoals.map((goal) => {
+                  const industry = industries.find((item) => item.id === goal.industryId);
+                  return (
+                    <option key={goal.id} value={goal.id}>
+                      {industry?.name ?? goal.industryId} · {goal.label}
+                    </option>
+                  );
+                })}
+              </select>
+            </label>
+            <div className="roadmap-goal">
+              <span>{industries.find((industry) => industry.id === selectedGoal.industryId)?.name}</span>
+              <h3>{selectedGoal.label}</h3>
+              <p>{selectedGoal.description}</p>
+            </div>
+          </div>
+
+          <div className="roadmap-flow" aria-label="추천 학습 순서">
+            {roadmapSteps.map((step, index) => (
+              <div className="roadmap-step" key={step.level}>
+                <div className="roadmap-step__marker">
+                  <span>{index + 1}</span>
+                </div>
+                <div>
+                  <strong>{step.level} 단계</strong>
+                  <p>
+                    {step.level === "입문" && "기본 개념과 도구 감각을 먼저 잡습니다."}
+                    {step.level === "실무" && "채용 공고에 자주 등장하는 실무 역량을 증명합니다."}
+                    {step.level === "전문" && "담당 업무의 전문성과 법정 요건을 보강합니다."}
+                    {step.level === "고급" && "리드급 역할이나 고난도 프로젝트 역량을 보여줍니다."}
+                  </p>
+                  <div className="roadmap-step__items">
+                    {step.items.map((certification) => (
+                      <button
+                        type="button"
+                        key={certification.id}
+                        onClick={() => {
+                          setSelectedIndustry(certification.industryId);
+                          setSelectedId(certification.id);
+                          setQuery("");
+                        }}
+                      >
+                        {certification.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="recommendation-grid" aria-label="추천 자격증">
+            {roadmapRecommendations.slice(0, 5).map(({ certification, score }) => {
+              const schedule = getNextSchedule(certification);
+              return (
+                <article className="recommendation-card" key={certification.id}>
+                  <div className="recommendation-card__top">
+                    <span>
+                      <Star size={15} aria-hidden="true" />
+                      {getRecommendationReason(certification, selectedGoal)}
+                    </span>
+                    <strong>{score}</strong>
+                  </div>
+                  <h3>{certification.name}</h3>
+                  <p>{certification.summary}</p>
+                  <div className="recommendation-card__meta">
+                    <span>{certification.level}</span>
+                    <span>{certification.averagePrepWeeks}주</span>
+                    <span>{formatDate(schedule.examDate)}</span>
+                  </div>
+                  <div className="recommendation-card__actions">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedIndustry(certification.industryId);
+                        setSelectedId(certification.id);
+                        setQuery("");
+                      }}
+                    >
+                      <Target size={16} aria-hidden="true" />
+                      상세 보기
+                    </button>
+                    <a href={certification.officialUrl} target="_blank" rel="noreferrer">
+                      공식 사이트
+                      <ArrowUpRight size={15} aria-hidden="true" />
+                    </a>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
         </div>
       </section>
 
