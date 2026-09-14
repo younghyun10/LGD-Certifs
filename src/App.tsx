@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import type { CatalogResponse, Certification, Industry, IndustryId } from "./types";
 
+type View = "home" | "explore" | "schedule" | "roadmap";
+
 const iconByIndustry: Record<IndustryId, typeof Cpu> = {
   it: Cpu,
   health: HeartPulse,
@@ -174,6 +176,19 @@ const levelRank: Record<Certification["level"], number> = {
   고급: 4
 };
 
+const viewLabels: Record<View, string> = {
+  home: "홈",
+  explore: "자격증 찾기",
+  schedule: "일정 보기",
+  roadmap: "로드맵 추천"
+};
+
+function getInitialView(): View {
+  const hash = window.location.hash.replace("#", "");
+  if (hash === "explore" || hash === "schedule" || hash === "roadmap") return hash;
+  return "home";
+}
+
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("ko-KR", {
     month: "2-digit",
@@ -259,10 +274,17 @@ function getRecommendationReason(certification: Certification, goal: RoadmapGoal
 
 export function App() {
   const [catalog, setCatalog] = useState<CatalogResponse | null>(null);
+  const [view, setView] = useState<View>(getInitialView);
   const [selectedIndustry, setSelectedIndustry] = useState<IndustryId | "all">("all");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string>("");
   const [selectedGoalId, setSelectedGoalId] = useState(roadmapGoals[0].id);
+
+  function navigate(nextView: View) {
+    setView(nextView);
+    window.history.replaceState(null, "", nextView === "home" ? "/" : `#${nextView}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   useEffect(() => {
     requestCatalog()
@@ -273,6 +295,12 @@ export function App() {
       .catch(() => {
         setCatalog({ industries: [], certifications: [] });
       });
+  }, []);
+
+  useEffect(() => {
+    const syncHash = () => setView(getInitialView());
+    window.addEventListener("hashchange", syncHash);
+    return () => window.removeEventListener("hashchange", syncHash);
   }, []);
 
   const industries = catalog?.industries ?? [];
@@ -335,66 +363,139 @@ export function App() {
       .filter((step) => step.items.length > 0);
   }, [roadmapRecommendations]);
 
+  const scheduleItems = useMemo(() => {
+    return certifications
+      .flatMap((certification) =>
+        certification.schedules.map((schedule) => ({
+          certification,
+          schedule,
+          date: new Date(schedule.examDate)
+        }))
+      )
+      .sort((a, b) => a.date.getTime() - b.date.getTime());
+  }, [certifications]);
+
   return (
     <main>
-      <section className="hero">
-        <img className="hero__image" src="/certimap-hero.png" alt="자격증 탐색 대시보드 콘셉트" />
-        <div className="hero__shade" />
-        <nav className="nav" aria-label="주요 메뉴">
-          <a className="brand" href="/">
-            <ShieldCheck aria-hidden="true" />
-            <span>CertiMap</span>
-          </a>
-          <div className="nav__links">
-            <a href="#explore">탐색</a>
-            <a href="#roadmap">로드맵</a>
-            <a href="#schedule">시험 일정</a>
-            <a href="#story">브랜드</a>
-          </div>
-        </nav>
-        <div className="hero__content">
+      <nav className={`nav ${view === "home" ? "nav--overlay" : "nav--solid"}`} aria-label="주요 메뉴">
+        <button className="brand brand--button" onClick={() => navigate("home")} type="button">
+          <ShieldCheck aria-hidden="true" />
+          <span>CertiMap</span>
+        </button>
+        <div className="nav__links">
+          {(["explore", "schedule", "roadmap"] as View[]).map((item) => (
+            <button
+              className={view === item ? "is-active" : ""}
+              key={item}
+              onClick={() => navigate(item)}
+              type="button"
+            >
+              {viewLabels[item]}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      {view === "home" && (
+        <>
+          <section className="hero">
+            <img className="hero__image" src="/certimap-hero.png" alt="자격증 탐색 대시보드 콘셉트" />
+            <div className="hero__shade" />
+            <div className="hero__content">
+              <p className="eyebrow">
+                <Sparkles size={16} aria-hidden="true" />
+                산업별 자격증 탐색 플랫폼
+              </p>
+              <h1>궁금한 직무에 필요한 자격증을 한 번에 찾으세요.</h1>
+              <p>
+                CertiMap은 산업 분야, 직무 키워드, 시험 일정을 연결해 다음 커리어 선택에
+                필요한 자격증 정보를 빠르게 보여주는 가상의 정보 조회 서비스입니다.
+              </p>
+              <div className="hero__actions">
+                <button className="button button--primary" onClick={() => navigate("explore")} type="button">
+                  <Search size={18} aria-hidden="true" />
+                  자격증 찾기
+                </button>
+                <button className="button button--ghost" onClick={() => navigate("schedule")} type="button">
+                  <CalendarDays size={18} aria-hidden="true" />
+                  일정 보기
+                </button>
+                <button className="button button--ghost" onClick={() => navigate("roadmap")} type="button">
+                  <Map size={18} aria-hidden="true" />
+                  로드맵 추천
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section className="quick-stats" aria-label="서비스 요약">
+            <div>
+              <strong>{industries.length || 6}</strong>
+              <span>산업 분야</span>
+            </div>
+            <div>
+              <strong>{certifications.length || 60}</strong>
+              <span>추천 자격증</span>
+            </div>
+            <div>
+              <strong>{roadmapGoals.length}</strong>
+              <span>직무 로드맵</span>
+            </div>
+          </section>
+
+          <section className="home-actions" aria-label="주요 기능">
+            <button onClick={() => navigate("explore")} type="button">
+              <Search aria-hidden="true" />
+              <strong>자격증 찾기</strong>
+              <span>분야와 키워드로 자격증을 탐색하고 상세 정보를 확인합니다.</span>
+            </button>
+            <button onClick={() => navigate("schedule")} type="button">
+              <CalendarDays aria-hidden="true" />
+              <strong>일정 보기</strong>
+              <span>시험일, 접수 기간, 합격 발표일을 한 화면에서 비교합니다.</span>
+            </button>
+            <button onClick={() => navigate("roadmap")} type="button">
+              <Map aria-hidden="true" />
+              <strong>로드맵 추천</strong>
+              <span>목표 직무에 맞는 핵심 자격과 보완 자격을 추천받습니다.</span>
+            </button>
+          </section>
+
+          <section className="story" id="story">
+            <div>
+              <p className="eyebrow">Brand Story</p>
+              <h2>CertiMap은 흩어진 자격 정보를 커리어 지도처럼 정리합니다.</h2>
+            </div>
+            <p>
+              어떤 분야가 궁금해졌을 때 가장 먼저 막히는 지점은 “무엇부터 확인해야 하는가”입니다.
+              CertiMap은 직무와 산업을 출발점으로 삼아 필요한 자격, 시험 일정, 공식 안내 페이지를
+              한 흐름으로 묶어 학습 계획을 세우기 쉽게 만드는 브랜드입니다.
+            </p>
+          </section>
+        </>
+      )}
+
+      {view !== "home" && (
+        <header className="page-header">
           <p className="eyebrow">
-            <Sparkles size={16} aria-hidden="true" />
-            산업별 자격증 탐색 플랫폼
+            <ShieldCheck aria-hidden="true" />
+            {viewLabels[view]}
           </p>
-          <h1>궁금한 직무에 필요한 자격증을 한 번에 찾으세요.</h1>
+          <h1>
+            {view === "explore" && "자격증 찾기"}
+            {view === "schedule" && "시험 일정 보기"}
+            {view === "roadmap" && "로드맵 추천"}
+          </h1>
           <p>
-            CertiMap은 산업 분야, 직무 키워드, 시험 일정을 연결해 다음 커리어 선택에
-            필요한 자격증 정보를 빠르게 보여주는 가상의 정보 조회 서비스입니다.
+            {view === "explore" && "분야와 키워드로 필요한 자격증을 빠르게 좁혀보세요."}
+            {view === "schedule" && "접수 기간, 시험일, 발표일을 자격증별로 한눈에 확인하세요."}
+            {view === "roadmap" && "목표 직무에 맞는 핵심 자격과 있으면 좋은 자격을 단계별로 추천합니다."}
           </p>
-          <div className="hero__actions">
-            <a className="button button--primary" href="#explore">
-              <Search size={18} aria-hidden="true" />
-              자격증 찾기
-            </a>
-            <a className="button button--ghost" href="#schedule">
-              <CalendarDays size={18} aria-hidden="true" />
-              일정 보기
-            </a>
-            <a className="button button--ghost" href="#roadmap">
-              <Map size={18} aria-hidden="true" />
-              로드맵 추천
-            </a>
-          </div>
-        </div>
-      </section>
+        </header>
+      )}
 
-      <section className="quick-stats" aria-label="서비스 요약">
-        <div>
-          <strong>{industries.length || 6}</strong>
-          <span>산업 분야</span>
-        </div>
-        <div>
-          <strong>{certifications.length || 7}</strong>
-          <span>추천 자격증</span>
-        </div>
-        <div>
-          <strong>{roadmapGoals.length}</strong>
-          <span>직무 로드맵</span>
-        </div>
-      </section>
-
-      <section className="roadmap" id="roadmap">
+      {view === "roadmap" && (
+      <section className="roadmap">
         <div className="section-heading">
           <div>
             <p className="eyebrow">Roadmap Recommender</p>
@@ -454,6 +555,7 @@ export function App() {
                           setSelectedIndustry(certification.industryId);
                           setSelectedId(certification.id);
                           setQuery("");
+                          navigate("explore");
                         }}
                       >
                         {certification.name}
@@ -491,6 +593,7 @@ export function App() {
                         setSelectedIndustry(certification.industryId);
                         setSelectedId(certification.id);
                         setQuery("");
+                        navigate("explore");
                       }}
                     >
                       <Target size={16} aria-hidden="true" />
@@ -507,8 +610,10 @@ export function App() {
           </div>
         </div>
       </section>
+      )}
 
-      <section className="explorer" id="explore">
+      {view === "explore" && (
+      <section className="explorer">
         <div className="section-heading">
           <p className="eyebrow">Certification Finder</p>
           <h2>산업 분야별 자격증 조회</h2>
@@ -646,18 +751,90 @@ export function App() {
           )}
         </div>
       </section>
+      )}
 
-      <section className="story" id="story">
-        <div>
-          <p className="eyebrow">Brand Story</p>
-          <h2>CertiMap은 흩어진 자격 정보를 커리어 지도처럼 정리합니다.</h2>
-        </div>
-        <p>
-          어떤 분야가 궁금해졌을 때 가장 먼저 막히는 지점은 “무엇부터 확인해야 하는가”입니다.
-          CertiMap은 직무와 산업을 출발점으로 삼아 필요한 자격, 시험 일정, 공식 안내 페이지를
-          한 흐름으로 묶어 학습 계획을 세우기 쉽게 만드는 브랜드입니다.
-        </p>
-      </section>
+      {view === "schedule" && (
+        <section className="schedule-page">
+          <div className="schedule-page__tools">
+            <label className="search-box">
+              <Search size={18} aria-hidden="true" />
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="일정에서 자격증, 기관명 검색"
+              />
+            </label>
+            <div className="filters" aria-label="일정 분야 필터">
+              <button
+                className={selectedIndustry === "all" ? "is-active" : ""}
+                onClick={() => setSelectedIndustry("all")}
+                type="button"
+              >
+                전체
+              </button>
+              {industries.map((industry) => {
+                const Icon = iconByIndustry[industry.id];
+                return (
+                  <button
+                    className={selectedIndustry === industry.id ? "is-active" : ""}
+                    key={industry.id}
+                    onClick={() => setSelectedIndustry(industry.id)}
+                    type="button"
+                  >
+                    <Icon size={16} aria-hidden="true" />
+                    {industry.name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="schedule-list" aria-label="전체 시험 일정">
+            {scheduleItems
+              .filter(({ certification }) => {
+                const normalizedQuery = query.trim().toLowerCase();
+                const matchesIndustry =
+                  selectedIndustry === "all" || certification.industryId === selectedIndustry;
+                const matchesQuery =
+                  !normalizedQuery ||
+                  [certification.name, certification.issuer, certification.summary]
+                    .join(" ")
+                    .toLowerCase()
+                    .includes(normalizedQuery);
+                return matchesIndustry && matchesQuery;
+              })
+              .map(({ certification, schedule }) => {
+                const industry = industries.find((item) => item.id === certification.industryId);
+                return (
+                  <article className="schedule-card" key={`${certification.id}-${schedule.round}`}>
+                    <div>
+                      <span>{industry?.name}</span>
+                      <h3>{certification.name}</h3>
+                      <p>{certification.issuer} · {certification.type} · {certification.level}</p>
+                    </div>
+                    <div className="schedule-card__dates">
+                      <strong>{schedule.round}</strong>
+                      <span>접수 {formatDate(schedule.registrationStart)}-{formatDate(schedule.registrationEnd)}</span>
+                      <span>시험 {formatDate(schedule.examDate)}</span>
+                      <span>발표 {formatDate(schedule.resultDate)}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedIndustry(certification.industryId);
+                        setSelectedId(certification.id);
+                        setQuery("");
+                        navigate("explore");
+                      }}
+                    >
+                      상세 보기
+                    </button>
+                  </article>
+                );
+              })}
+          </div>
+        </section>
+      )}
     </main>
   );
 }
