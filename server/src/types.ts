@@ -4,7 +4,15 @@ export type IndustryId =
   | "construction"
   | "business"
   | "environment"
-  | "design";
+  | "design"
+  | "finance"
+  | "education"
+  | "legal"
+  | "public"
+  | "manufacturing"
+  | "energy"
+  | "media"
+  | "hospitality";
 
 export type ExamType = "written" | "practical" | "portfolio" | "interview";
 

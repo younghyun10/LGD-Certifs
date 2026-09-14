@@ -7,10 +7,15 @@ import {
   Building2,
   CalendarDays,
   CheckCircle2,
+  Clapperboard,
   ClipboardList,
   Cpu,
+  Factory,
+  GraduationCap,
   Layers3,
   HeartPulse,
+  Hotel,
+  Landmark,
   Leaf,
   Map,
   Palette,
@@ -18,7 +23,10 @@ import {
   ShieldCheck,
   Sparkles,
   Star,
-  Target
+  Target,
+  Zap,
+  Scale,
+  ScrollText
 } from "lucide-react";
 import type { CatalogResponse, Certification, Industry, IndustryId } from "./types";
 
@@ -30,7 +38,15 @@ const iconByIndustry: Record<IndustryId, typeof Cpu> = {
   construction: Building2,
   business: BriefcaseBusiness,
   environment: Leaf,
-  design: Palette
+  design: Palette,
+  finance: Landmark,
+  education: GraduationCap,
+  legal: Scale,
+  public: ScrollText,
+  manufacturing: Factory,
+  energy: Zap,
+  media: Clapperboard,
+  hospitality: Hotel
 };
 
 const examTypeLabel = {
@@ -167,6 +183,69 @@ const roadmapGoals: RoadmapGoal[] = [
     keywords: ["UX", "서비스", "제품", "웹", "사용자", "경험", "프로토타입"],
     mustHave: ["ux-researcher", "product-design-engineer"],
     niceToHave: ["web-design-functional", "gtqid-indesign", "computer-graphics-operation"]
+  },
+  {
+    id: "financial-risk-analyst",
+    industryId: "finance",
+    label: "금융 리스크 분석가",
+    description: "투자, 신용, 보험 데이터를 기반으로 위험을 측정하고 재무 의사결정을 지원하는 직무",
+    keywords: ["금융", "리스크", "투자", "신용", "보험", "재무", "데이터"],
+    mustHave: ["investment-advisor", "credit-analyst"],
+    niceToHave: ["frm", "afpk", "data-analyst-junior"]
+  },
+  {
+    id: "learning-designer",
+    industryId: "education",
+    label: "교육 콘텐츠 기획자",
+    description: "학습 목표, 콘텐츠 설계, 디지털 교육 운영을 연결하는 에듀테크·교육 기획 직무",
+    keywords: ["교육", "학습", "콘텐츠", "교수설계", "상담", "평생교육"],
+    mustHave: ["lifelong-educator", "vocational-counselor"],
+    niceToHave: ["e-learning-specialist", "korean-language-teacher", "computer-literacy"]
+  },
+  {
+    id: "legal-compliance",
+    industryId: "legal",
+    label: "법무·컴플라이언스 담당자",
+    description: "계약, 개인정보, 지식재산, 노무 이슈를 점검하고 조직의 법적 리스크를 관리하는 직무",
+    keywords: ["법무", "계약", "컴플라이언스", "개인정보", "노무", "지식재산"],
+    mustHave: ["personal-information-manager", "compliance-officer"],
+    niceToHave: ["patent-information-searcher", "hr-specialist", "administrative-agent"]
+  },
+  {
+    id: "public-administration",
+    industryId: "public",
+    label: "공공 행정·정책 실무자",
+    description: "행정 문서, 정책 자료, 기록 관리, 공공 데이터 업무를 담당하는 공공 분야 실무 직군",
+    keywords: ["공공", "행정", "정책", "기록", "문서", "데이터"],
+    mustHave: ["administrative-agent", "records-manager"],
+    niceToHave: ["policy-analysis-specialist", "computer-literacy", "word-processor"]
+  },
+  {
+    id: "smart-factory-engineer",
+    industryId: "manufacturing",
+    label: "스마트팩토리 엔지니어",
+    description: "생산 설비, 품질, 자동화, CAD/CAM 데이터를 연결해 제조 현장을 개선하는 기술 직무",
+    keywords: ["제조", "생산", "품질", "자동화", "설비", "CAD", "공정"],
+    mustHave: ["quality-management-engineer", "production-automation-industrial"],
+    niceToHave: ["cad-industrial", "machinery-maintenance", "industrial-safety"]
+  },
+  {
+    id: "energy-manager",
+    industryId: "energy",
+    label: "에너지·전기 설비 관리자",
+    description: "전기, 에너지, 신재생 설비의 운영 효율과 안전 기준을 관리하는 시설·에너지 직무",
+    keywords: ["에너지", "전기", "설비", "신재생", "안전", "효율"],
+    mustHave: ["energy-manager-engineer", "electric-engineer"],
+    niceToHave: ["renewable-energy-engineer", "gas-engineer", "fire-safety-engineer"]
+  },
+  {
+    id: "content-marketer",
+    industryId: "media",
+    label: "콘텐츠 마케터·영상 기획자",
+    description: "영상, 광고, 디지털 캠페인, 소셜 콘텐츠를 기획하고 성과를 분석하는 콘텐츠 직무",
+    keywords: ["콘텐츠", "영상", "광고", "마케팅", "미디어", "SNS", "브랜드"],
+    mustHave: ["digital-marketing-specialist", "multimedia-content-specialist"],
+    niceToHave: ["google-analytics", "gtq-photoshop", "adobe-photoshop-professional"]
   }
 ];
 
