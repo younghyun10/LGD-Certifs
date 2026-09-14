@@ -734,6 +734,7 @@ main {
 
 .roadmap-detail {
   grid-column: 1 / -1;
+  scroll-margin-top: 96px;
 }
 
 .detail-panel__top {

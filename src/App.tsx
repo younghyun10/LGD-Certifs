@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type Ref } from "react";
 import {
   ArrowUpRight,
   BadgeCheck,
@@ -276,15 +276,17 @@ type CertificationDetailPanelProps = {
   certification: Certification;
   industryName?: string;
   className?: string;
+  detailRef?: Ref<HTMLElement>;
 };
 
 function CertificationDetailPanel({
   certification,
   industryName,
-  className = ""
+  className = "",
+  detailRef
 }: CertificationDetailPanelProps) {
   return (
-    <article className={`detail-panel ${className}`}>
+    <article className={`detail-panel ${className}`} ref={detailRef}>
       <div className="detail-panel__top">
         <div>
           <p className="eyebrow">{industryName}</p>
@@ -364,11 +366,22 @@ export function App() {
   const [selectedId, setSelectedId] = useState<string>("");
   const [selectedRoadmapId, setSelectedRoadmapId] = useState<string>("");
   const [selectedGoalId, setSelectedGoalId] = useState(roadmapGoals[0].id);
+  const roadmapDetailRef = useRef<HTMLElement | null>(null);
 
   function navigate(nextView: View) {
     setView(nextView);
     window.history.replaceState(null, "", nextView === "home" ? "/" : `#${nextView}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function selectRoadmapCertification(certificationId: string) {
+    setSelectedRoadmapId(certificationId);
+    window.setTimeout(() => {
+      roadmapDetailRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }, 0);
   }
 
   useEffect(() => {
@@ -645,7 +658,7 @@ export function App() {
                         type="button"
                         className={selectedRoadmapCertification?.id === certification.id ? "is-active" : ""}
                         key={certification.id}
-                        onClick={() => setSelectedRoadmapId(certification.id)}
+                        onClick={() => selectRoadmapCertification(certification.id)}
                       >
                         {certification.name}
                       </button>
@@ -683,7 +696,7 @@ export function App() {
                   <div className="recommendation-card__actions">
                     <button
                       type="button"
-                      onClick={() => setSelectedRoadmapId(certification.id)}
+                      onClick={() => selectRoadmapCertification(certification.id)}
                     >
                       <Target size={16} aria-hidden="true" />
                       상세 보기
@@ -703,6 +716,7 @@ export function App() {
               certification={selectedRoadmapCertification}
               industryName={selectedRoadmapIndustryInfo?.name}
               className="detail-panel--featured roadmap-detail"
+              detailRef={roadmapDetailRef}
             />
           )}
         </div>
