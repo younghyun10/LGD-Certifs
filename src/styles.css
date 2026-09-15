@@ -215,7 +215,7 @@ main {
   margin: 0;
   max-width: 760px;
   font-size: clamp(2.35rem, 5.4vw, 5.25rem);
-  line-height: 1.8;
+  line-height: 1.2;
   letter-spacing: 0;
 }
 
