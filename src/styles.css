@@ -1310,6 +1310,7 @@ main {
 .portfolio-builder,
 .owned-panel,
 .industry-match-panel,
+.portfolio-job-panel,
 .next-cert-panel {
   border: 1px solid #ded8cf;
   border-radius: 8px;
@@ -1437,6 +1438,7 @@ main {
 }
 
 .industry-match-panel,
+.portfolio-job-panel,
 .next-cert-panel {
   padding: 22px;
 }
@@ -1488,6 +1490,92 @@ main {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
+}
+
+.portfolio-job-list {
+  display: grid;
+  gap: 12px;
+}
+
+.portfolio-job-card {
+  display: grid;
+  gap: 13px;
+  padding: 18px;
+  border: 1px solid #ece7de;
+  border-radius: 8px;
+  background: #fffdf8;
+}
+
+.portfolio-job-card__top,
+.portfolio-job-card__actions {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.portfolio-job-card__top span {
+  color: #0e827a;
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.portfolio-job-card__top h4 {
+  margin: 6px 0 0;
+  color: #111b1a;
+  font-size: 1.08rem;
+  line-height: 1.45;
+}
+
+.portfolio-job-card__top > strong {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0 11px;
+  color: #06201d;
+  background: #45d7c1;
+  font-size: 0.84rem;
+  white-space: nowrap;
+}
+
+.portfolio-job-card__reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.portfolio-job-card__reasons span {
+  padding: 8px 10px;
+  border-radius: 999px;
+  color: #7a4b09;
+  background: #fff0d6;
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.portfolio-job-card__actions {
+  align-items: center;
+}
+
+.portfolio-job-card__actions > span {
+  color: #a65d11;
+  font-weight: 900;
+}
+
+.portfolio-job-card__actions a {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid #ded8cf;
+  border-radius: 8px;
+  padding: 0 12px;
+  color: #39413f;
+  background: #ffffff;
+  font-weight: 900;
+  white-space: nowrap;
 }
 
 .story {
@@ -1568,7 +1656,9 @@ main {
   }
 
   .detail-panel__top,
-  .schedule-table__head {
+  .schedule-table__head,
+  .portfolio-job-card__top,
+  .portfolio-job-card__actions {
     align-items: stretch;
     flex-direction: column;
   }

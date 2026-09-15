@@ -540,6 +540,36 @@ function getOverlapScore(source: Certification[], target: Certification) {
     .filter((word) => ownedWords.has(word)).length;
 }
 
+const jobKeywordsByIndustry: Record<IndustryId, string[]> = {
+  it: ["정보통신", "전산", "데이터", "보안", "클라우드", "시스템", "개발"],
+  health: ["보건", "의료", "복지", "간호", "재활", "상담"],
+  construction: ["건설", "건축", "토목", "안전", "시설", "전기"],
+  business: ["경영", "회계", "사무", "총무", "인사", "물류"],
+  environment: ["환경", "농림", "에너지", "안전", "조경", "산림"],
+  design: ["디자인", "콘텐츠", "홍보", "시각", "브랜드"],
+  finance: ["금융", "보험", "재무", "회계", "투자", "자산"],
+  education: ["교육", "상담", "훈련", "평생교육", "교수"],
+  legal: ["법무", "노무", "감사", "준법", "개인정보"],
+  public: ["행정", "정책", "공공", "기록", "조달", "사무"],
+  manufacturing: ["제조", "생산", "품질", "기계", "설비", "반도체"],
+  energy: ["전기", "에너지", "발전", "가스", "설비", "안전"],
+  media: ["방송", "영상", "미디어", "콘텐츠", "홍보"],
+  hospitality: ["관광", "호텔", "서비스", "조리", "식음료"],
+};
+
+function getJobText(job: PublicJobsResponse["jobs"][number]) {
+  return [
+    job.title,
+    job.organization,
+    job.location,
+    job.employmentType,
+    job.careerType,
+    ...job.ncs,
+  ]
+    .join(" ")
+    .toLowerCase();
+}
+
 function readJson<T>(key: string, fallback: T): T {
   try {
     const value = window.localStorage.getItem(key);
@@ -1037,6 +1067,89 @@ export function App() {
       .sort((a, b) => b.score - a.score)
       .slice(0, 6);
   }, [certifications, ownedCertificationIds, ownedCertifications]);
+
+  const portfolioJobRecommendations = useMemo(() => {
+    if (ownedCertifications.length === 0) return [];
+
+    const matchedIndustryIds = new Set(
+      portfolioIndustryMatches.map((item) => item.industry.id),
+    );
+    const ownedIndustries = new Set(
+      ownedCertifications.map((certification) => certification.industryId),
+    );
+    const ownedSignals = ownedCertifications.flatMap((certification) => [
+      certification.name,
+      certification.issuer,
+      certification.summary,
+      ...certification.fitFor,
+      ...certification.requiredFor,
+      ...jobKeywordsByIndustry[certification.industryId],
+    ]);
+
+    return publicJobs
+      .map((job) => {
+        const jobText = getJobText(job);
+        const directMatches = ownedSignals.filter((signal) => {
+          const normalized = signal.toLowerCase();
+          return normalized.length > 1 && jobText.includes(normalized);
+        });
+        const industryMatches = Array.from(ownedIndustries).filter(
+          (industryId) =>
+            jobKeywordsByIndustry[industryId].some((keyword) =>
+              jobText.includes(keyword.toLowerCase()),
+            ),
+        );
+        const recommendedIndustryBonus = Array.from(matchedIndustryIds).filter(
+          (industryId) =>
+            jobKeywordsByIndustry[industryId].some((keyword) =>
+              jobText.includes(keyword.toLowerCase()),
+            ),
+        ).length;
+        const ncsBonus = job.ncs.some((ncs) =>
+          Array.from(ownedIndustries).some((industryId) =>
+            jobKeywordsByIndustry[industryId].some((keyword) =>
+              ncs.toLowerCase().includes(keyword.toLowerCase()),
+            ),
+          ),
+        )
+          ? 18
+          : 0;
+
+        const score =
+          directMatches.length * 6 +
+          industryMatches.length * 20 +
+          recommendedIndustryBonus * 10 +
+          ncsBonus;
+        const reasons = [
+          ...industryMatches
+            .map(
+              (industryId) =>
+                industries.find((industry) => industry.id === industryId)
+                  ?.name,
+            )
+            .filter(Boolean)
+            .map((name) => `${name} 산업 연결`),
+          ...directMatches.slice(0, 2).map((signal) => `${signal} 역량 반영`),
+        ];
+
+        return {
+          job,
+          score,
+          reasons:
+            reasons.length > 0
+              ? Array.from(new Set(reasons)).slice(0, 3)
+              : ["보유 자격 산업군과 유사한 공고"],
+        };
+      })
+      .filter((item) => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 4);
+  }, [
+    industries,
+    ownedCertifications,
+    portfolioIndustryMatches,
+    publicJobs,
+  ]);
 
   function addOwnedCertification(certificationId: string) {
     if (!authUser) {
@@ -1851,6 +1964,62 @@ export function App() {
                     },
                   )}
                 </div>
+              </section>
+
+              <section className="portfolio-job-panel">
+                <div className="panel-heading">
+                  <div>
+                    <p className="eyebrow">Job Match</p>
+                    <h3>지원해볼 만한 채용 공고</h3>
+                  </div>
+                  <strong>{portfolioJobRecommendations.length}건</strong>
+                </div>
+                {portfolioJobRecommendations.length > 0 ? (
+                  <div className="portfolio-job-list">
+                    {portfolioJobRecommendations.map(({ job, score, reasons }) => (
+                      <article className="portfolio-job-card" key={job.id}>
+                        <div className="portfolio-job-card__top">
+                          <div>
+                            <span>{job.organization}</span>
+                            <h4>{job.title}</h4>
+                          </div>
+                          <strong>{score}점</strong>
+                        </div>
+                        <div className="job-card__tags">
+                          {job.ncs.map((ncs) => (
+                            <span key={`${job.id}-portfolio-${ncs}`}>{ncs}</span>
+                          ))}
+                        </div>
+                        <div className="portfolio-job-card__reasons">
+                          {reasons.map((reason) => (
+                            <span key={`${job.id}-${reason}`}>{reason}</span>
+                          ))}
+                        </div>
+                        <div className="job-card__meta">
+                          <span>근무지 {job.location}</span>
+                          <span>{job.employmentType}</span>
+                          <span>{job.careerType}</span>
+                          <span>모집 {job.headcount}</span>
+                        </div>
+                        <div className="portfolio-job-card__actions">
+                          <span>
+                            접수 {job.startDate} - {job.endDate}
+                          </span>
+                          <a href={job.sourceUrl} target="_blank" rel="noreferrer">
+                            공고 보기
+                            <ArrowUpRight size={15} aria-hidden="true" />
+                          </a>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="empty-copy">
+                    아직 보유 자격과 연결되는 공고를 찾지 못했습니다. 공고
+                    데이터가 갱신되거나 보유 자격증을 더 등록하면 추천이
+                    늘어납니다.
+                  </p>
+                )}
               </section>
 
               <section className="next-cert-panel">
