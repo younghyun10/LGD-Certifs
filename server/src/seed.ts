@@ -666,6 +666,450 @@ const additionalCertifications: Omit<Certification, "schedules">[] = [
     officialUrl: "https://license.kpc.or.kr",
     examFee: "45,000원",
     passingStandard: "100점 만점 70점 이상"
+  },
+  {
+    id: "aws-cloud-practitioner",
+    industryId: "it",
+    name: "AWS Certified Cloud Practitioner",
+    issuer: "Amazon Web Services",
+    level: "입문",
+    type: "국제자격",
+    summary: "AWS 클라우드 핵심 개념, 보안, 요금, 주요 서비스를 이해하는 입문 자격입니다.",
+    fitFor: ["클라우드 입문자", "IT 영업 담당자", "서비스 기획자"],
+    requiredFor: ["클라우드 기본 이해", "AWS 서비스 식별", "비용 구조 이해"],
+    averagePrepWeeks: 4,
+    officialUrl: "https://aws.amazon.com/certification/certified-cloud-practitioner/",
+    examFee: "100 USD",
+    passingStandard: "AWS 인증 기준 충족"
+  },
+  {
+    id: "aws-solutions-architect-associate",
+    industryId: "it",
+    name: "AWS Certified Solutions Architect - Associate",
+    issuer: "Amazon Web Services",
+    level: "전문",
+    type: "국제자격",
+    summary: "AWS 기반 고가용성 아키텍처 설계와 비용 최적화 역량을 검증합니다.",
+    fitFor: ["클라우드 엔지니어", "솔루션 아키텍트", "인프라 담당자"],
+    requiredFor: ["클라우드 아키텍처", "네트워크 구성", "운영 안정성"],
+    averagePrepWeeks: 10,
+    officialUrl: "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+    examFee: "150 USD",
+    passingStandard: "AWS 인증 기준 충족"
+  },
+  {
+    id: "aws-developer-associate",
+    industryId: "it",
+    name: "AWS Certified Developer - Associate",
+    issuer: "Amazon Web Services",
+    level: "전문",
+    type: "국제자격",
+    summary: "AWS에서 애플리케이션을 개발, 배포, 모니터링하는 역량을 인증합니다.",
+    fitFor: ["백엔드 개발자", "클라우드 개발자", "DevOps 엔지니어"],
+    requiredFor: ["서버리스 개발", "API 배포", "클라우드 모니터링"],
+    averagePrepWeeks: 9,
+    officialUrl: "https://aws.amazon.com/certification/certified-developer-associate/",
+    examFee: "150 USD",
+    passingStandard: "AWS 인증 기준 충족"
+  },
+  {
+    id: "aws-sysops-administrator-associate",
+    industryId: "it",
+    name: "AWS Certified SysOps Administrator - Associate",
+    issuer: "Amazon Web Services",
+    level: "전문",
+    type: "국제자격",
+    summary: "AWS 인프라 운영, 배포 자동화, 장애 대응과 모니터링 능력을 검증합니다.",
+    fitFor: ["시스템 운영자", "클라우드 운영 엔지니어", "SRE"],
+    requiredFor: ["인프라 운영", "장애 대응", "운영 자동화"],
+    averagePrepWeeks: 10,
+    officialUrl: "https://aws.amazon.com/certification/certified-sysops-admin-associate/",
+    examFee: "150 USD",
+    passingStandard: "AWS 인증 기준 충족"
+  },
+  {
+    id: "azure-administrator-associate",
+    industryId: "it",
+    name: "Microsoft Certified: Azure Administrator Associate",
+    issuer: "Microsoft",
+    level: "전문",
+    type: "국제자격",
+    summary: "Azure 리소스, 네트워크, ID, 보안, 모니터링을 운영하는 관리자 자격입니다.",
+    fitFor: ["클라우드 관리자", "인프라 엔지니어", "시스템 운영자"],
+    requiredFor: ["Azure 리소스 운영", "ID 관리", "네트워크 구성"],
+    averagePrepWeeks: 9,
+    officialUrl: "https://learn.microsoft.com/credentials/certifications/azure-administrator/",
+    examFee: "지역별 상이",
+    passingStandard: "Microsoft 인증 기준 충족"
+  },
+  {
+    id: "azure-developer-associate",
+    industryId: "it",
+    name: "Microsoft Certified: Azure Developer Associate",
+    issuer: "Microsoft",
+    level: "전문",
+    type: "국제자격",
+    summary: "Azure 기반 앱 개발, 스토리지, 보안, API 연동과 배포 역량을 검증합니다.",
+    fitFor: ["클라우드 개발자", "백엔드 개발자", "API 개발자"],
+    requiredFor: ["Azure 앱 개발", "보안 연동", "배포 자동화"],
+    averagePrepWeeks: 9,
+    officialUrl: "https://learn.microsoft.com/credentials/certifications/azure-developer/",
+    examFee: "지역별 상이",
+    passingStandard: "Microsoft 인증 기준 충족"
+  },
+  {
+    id: "google-associate-cloud-engineer",
+    industryId: "it",
+    name: "Google Associate Cloud Engineer",
+    issuer: "Google Cloud",
+    level: "실무",
+    type: "국제자격",
+    summary: "Google Cloud 환경 구성, 배포, 운영 모니터링 기초 역량을 인증합니다.",
+    fitFor: ["클라우드 엔지니어", "인프라 운영자", "주니어 DevOps"],
+    requiredFor: ["GCP 리소스 구성", "배포 운영", "클라우드 모니터링"],
+    averagePrepWeeks: 8,
+    officialUrl: "https://cloud.google.com/learn/certification/cloud-engineer",
+    examFee: "125 USD",
+    passingStandard: "Google Cloud 인증 기준 충족"
+  },
+  {
+    id: "comptia-a-plus",
+    industryId: "it",
+    name: "CompTIA A+",
+    issuer: "CompTIA",
+    level: "입문",
+    type: "국제자격",
+    summary: "PC, 운영체제, 네트워크, 보안 기초와 IT 지원 업무 역량을 검증합니다.",
+    fitFor: ["IT 지원 담당자", "헬프데스크", "시스템 운영 입문자"],
+    requiredFor: ["하드웨어 이해", "운영체제 문제 해결", "기초 보안"],
+    averagePrepWeeks: 8,
+    officialUrl: "https://www.comptia.org/certifications/a",
+    examFee: "시험센터별 상이",
+    passingStandard: "CompTIA 인증 기준 충족"
+  },
+  {
+    id: "comptia-network-plus",
+    industryId: "it",
+    name: "CompTIA Network+",
+    issuer: "CompTIA",
+    level: "실무",
+    type: "국제자격",
+    summary: "네트워크 설계, 운영, 보안, 장애 분석의 기초 실무 역량을 인증합니다.",
+    fitFor: ["네트워크 운영자", "인프라 엔지니어", "보안 입문자"],
+    requiredFor: ["네트워크 프로토콜", "장애 분석", "네트워크 보안"],
+    averagePrepWeeks: 9,
+    officialUrl: "https://www.comptia.org/certifications/network",
+    examFee: "시험센터별 상이",
+    passingStandard: "CompTIA 인증 기준 충족"
+  },
+  {
+    id: "comptia-security-plus",
+    industryId: "it",
+    name: "CompTIA Security+",
+    issuer: "CompTIA",
+    level: "실무",
+    type: "국제자격",
+    summary: "보안 위협, 취약점, 암호화, 접근통제와 보안 운영 기초를 검증합니다.",
+    fitFor: ["보안 담당자", "시스템 운영자", "보안 컨설턴트 입문자"],
+    requiredFor: ["보안 위협 분석", "접근통제", "보안 운영"],
+    averagePrepWeeks: 10,
+    officialUrl: "https://www.comptia.org/certifications/security",
+    examFee: "시험센터별 상이",
+    passingStandard: "CompTIA 인증 기준 충족"
+  },
+  {
+    id: "cisco-ccna",
+    industryId: "it",
+    name: "Cisco CCNA",
+    issuer: "Cisco",
+    level: "실무",
+    type: "국제자격",
+    summary: "라우팅, 스위칭, IP 서비스, 보안 기초와 자동화 기초를 검증합니다.",
+    fitFor: ["네트워크 엔지니어", "인프라 운영자", "보안 엔지니어"],
+    requiredFor: ["라우팅·스위칭", "IP 네트워크", "네트워크 자동화"],
+    averagePrepWeeks: 12,
+    officialUrl: "https://www.cisco.com/site/us/en/learn/training-certifications/certifications/enterprise/ccna/index.html",
+    examFee: "300 USD",
+    passingStandard: "Cisco 인증 기준 충족"
+  },
+  {
+    id: "kubernetes-cka",
+    industryId: "it",
+    name: "Certified Kubernetes Administrator",
+    issuer: "Cloud Native Computing Foundation",
+    level: "전문",
+    type: "국제자격",
+    summary: "Kubernetes 클러스터 설치, 운영, 네트워킹, 보안과 장애 대응 역량을 검증합니다.",
+    fitFor: ["플랫폼 엔지니어", "DevOps 엔지니어", "클라우드 운영자"],
+    requiredFor: ["컨테이너 오케스트레이션", "클러스터 운영", "장애 대응"],
+    averagePrepWeeks: 12,
+    officialUrl: "https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/",
+    examFee: "395 USD",
+    passingStandard: "실습형 시험 합격 기준 충족"
+  },
+  {
+    id: "kubernetes-ckad",
+    industryId: "it",
+    name: "Certified Kubernetes Application Developer",
+    issuer: "Cloud Native Computing Foundation",
+    level: "전문",
+    type: "국제자격",
+    summary: "Kubernetes 환경에서 애플리케이션을 설계, 배포, 설정, 관찰하는 개발 자격입니다.",
+    fitFor: ["클라우드 네이티브 개발자", "백엔드 개발자", "DevOps 엔지니어"],
+    requiredFor: ["컨테이너 앱 배포", "워크로드 설정", "서비스 관찰"],
+    averagePrepWeeks: 10,
+    officialUrl: "https://training.linuxfoundation.org/certification/certified-kubernetes-application-developer-ckad/",
+    examFee: "395 USD",
+    passingStandard: "실습형 시험 합격 기준 충족"
+  },
+  {
+    id: "terraform-associate",
+    industryId: "it",
+    name: "HashiCorp Certified: Terraform Associate",
+    issuer: "HashiCorp",
+    level: "실무",
+    type: "국제자격",
+    summary: "Terraform을 활용한 IaC 구성, 상태 관리, 모듈 활용과 워크플로 이해도를 검증합니다.",
+    fitFor: ["DevOps 엔지니어", "클라우드 엔지니어", "인프라 자동화 담당자"],
+    requiredFor: ["IaC 작성", "인프라 버전관리", "자동화 워크플로"],
+    averagePrepWeeks: 6,
+    officialUrl: "https://developer.hashicorp.com/certifications/infrastructure-automation",
+    examFee: "70.50 USD",
+    passingStandard: "HashiCorp 인증 기준 충족"
+  },
+  {
+    id: "oracle-java-se-17",
+    industryId: "it",
+    name: "Oracle Certified Professional Java SE 17 Developer",
+    issuer: "Oracle",
+    level: "전문",
+    type: "국제자격",
+    summary: "Java 문법, 객체지향, API, 예외 처리와 모듈 시스템 개발 역량을 인증합니다.",
+    fitFor: ["Java 개발자", "백엔드 개발자", "서버 개발자"],
+    requiredFor: ["Java 프로그래밍", "객체지향 설계", "표준 API 활용"],
+    averagePrepWeeks: 12,
+    officialUrl: "https://education.oracle.com/oracle-certified-professional-java-se-17-developer/trackp_OCPJSE17",
+    examFee: "지역별 상이",
+    passingStandard: "Oracle 인증 기준 충족"
+  },
+  {
+    id: "certified-real-estate-appraiser",
+    industryId: "finance",
+    name: "감정평가사",
+    issuer: "한국산업인력공단",
+    level: "고급",
+    type: "국가자격",
+    summary: "부동산, 동산, 기업가치 등 경제적 가치를 평가하는 전문 자격입니다.",
+    fitFor: ["감정평가 법인", "부동산 금융 담당자", "자산평가 전문가"],
+    requiredFor: ["자산 가치평가", "부동산 시장 분석", "평가 법규 이해"],
+    averagePrepWeeks: 40,
+    officialUrl: "https://www.q-net.or.kr",
+    examFee: "큐넷 공고 기준",
+    passingStandard: "1차, 2차 시험 합격 기준 충족"
+  },
+  {
+    id: "financial-planner-cfp", industryId: "finance", name: "CFP", issuer: "한국FPSB", level: "고급", type: "국제자격",
+    summary: "종합 재무설계, 투자, 보험, 은퇴, 세금, 상속 설계 역량을 인증합니다.",
+    fitFor: ["재무설계 전문가", "PB", "자산관리 컨설턴트"], requiredFor: ["종합 재무설계", "자산관리 상담", "은퇴·상속 설계"],
+    averagePrepWeeks: 20, officialUrl: "https://www.fpsbkorea.org", examFee: "과정 및 시험별 상이", passingStandard: "FPSB 인증 기준 충족"
+  },
+  {
+    id: "securities-investment-advisor", industryId: "finance", name: "증권투자권유자문인력", issuer: "금융투자협회", level: "실무", type: "민간자격",
+    summary: "증권 상품 투자권유와 고객 상담에 필요한 법규, 상품, 투자분석 지식을 검증합니다.",
+    fitFor: ["증권사 영업 담당자", "금융상품 상담원", "투자상담 인력"], requiredFor: ["증권상품 설명", "투자권유 규정", "고객 상담"],
+    averagePrepWeeks: 6, officialUrl: "https://license.kofia.or.kr", examFee: "50,000원", passingStandard: "100점 만점 70점 이상"
+  },
+  {
+    id: "fund-investment-advisor", industryId: "finance", name: "펀드투자권유자문인력", issuer: "금융투자협회", level: "실무", type: "민간자격",
+    summary: "펀드 상품 구조, 투자권유 규정, 고객 적합성 원칙을 다루는 금융 영업 자격입니다.",
+    fitFor: ["은행 창구 상담원", "펀드 판매 담당자", "금융 영업 담당자"], requiredFor: ["펀드상품 이해", "투자자 보호", "금융규정 준수"],
+    averagePrepWeeks: 5, officialUrl: "https://license.kofia.or.kr", examFee: "50,000원", passingStandard: "100점 만점 70점 이상"
+  },
+  {
+    id: "derivatives-investment-advisor", industryId: "finance", name: "파생상품투자권유자문인력", issuer: "금융투자협회", level: "전문", type: "민간자격",
+    summary: "파생상품 구조, 위험 설명, 투자권유 규정과 고객 적합성 판단 역량을 평가합니다.",
+    fitFor: ["파생상품 영업 담당자", "PB", "리스크 관리 입문자"], requiredFor: ["파생상품 이해", "위험 설명", "투자권유 규정"],
+    averagePrepWeeks: 7, officialUrl: "https://license.kofia.or.kr", examFee: "50,000원", passingStandard: "100점 만점 70점 이상"
+  },
+  {
+    id: "asset-management-specialist", industryId: "finance", name: "자산관리사", issuer: "한국금융연수원", level: "실무", type: "민간자격",
+    summary: "개인 고객 자산관리, 세무, 부동산, 보험, 투자 상담 기초 역량을 검증합니다.",
+    fitFor: ["은행 PB", "자산관리 상담원", "금융 영업 담당자"], requiredFor: ["개인 자산관리", "금융상품 상담", "재무설계 기초"],
+    averagePrepWeeks: 8, officialUrl: "https://www.kbi.or.kr", examFee: "60,000원", passingStandard: "과목별 40점 이상, 평균 60점 이상"
+  },
+  {
+    id: "social-worker-level2", industryId: "health", name: "사회복지사 2급", issuer: "한국사회복지사협회", level: "전문", type: "국가자격",
+    summary: "사회복지 이론, 실습, 사례관리 기반의 복지 서비스 제공 역량을 인정하는 자격입니다.",
+    fitFor: ["사회복지기관 종사자", "복지 행정 담당자", "돌봄 서비스 운영자"], requiredFor: ["사례관리", "복지 프로그램 운영", "사회복지 실천"],
+    averagePrepWeeks: 16, officialUrl: "https://www.welfare.net", examFee: "과정 이수형", passingStandard: "관련 과목 및 실습 기준 충족"
+  },
+  {
+    id: "dental-hygienist", industryId: "health", name: "치과위생사", issuer: "한국보건의료인국가시험원", level: "전문", type: "국가자격",
+    summary: "구강보건 교육, 예방처치, 치과 진료 협조 역량을 검증하는 의료기사 자격입니다.",
+    fitFor: ["치과위생사", "구강보건 담당자", "치과 진료 지원"], requiredFor: ["구강보건 관리", "예방처치", "진료 협조"],
+    averagePrepWeeks: 12, officialUrl: "https://www.kuksiwon.or.kr", examFee: "국시원 공고 기준", passingStandard: "국가시험 합격 기준 충족"
+  },
+  {
+    id: "emergency-medical-technician", industryId: "health", name: "응급구조사 1급", issuer: "한국보건의료인국가시험원", level: "전문", type: "국가자격",
+    summary: "응급환자 평가, 처치, 이송과 현장 대응 역량을 검증하는 응급의료 자격입니다.",
+    fitFor: ["응급구조사", "구급대원", "응급의료센터 실무자"], requiredFor: ["응급처치", "환자 이송", "현장 대응"],
+    averagePrepWeeks: 12, officialUrl: "https://www.kuksiwon.or.kr", examFee: "국시원 공고 기준", passingStandard: "국가시험 합격 기준 충족"
+  },
+  {
+    id: "architect-engineer", industryId: "construction", name: "건축기사", issuer: "한국산업인력공단", level: "전문", type: "국가자격",
+    summary: "건축계획, 구조, 시공, 설비, 법규를 바탕으로 건축 실무 역량을 평가합니다.",
+    fitFor: ["건축 시공 기술자", "건축 설계 보조", "공사관리 담당자"], requiredFor: ["건축 시공", "건축 구조", "건축 법규"],
+    averagePrepWeeks: 12, officialUrl: "https://www.q-net.or.kr", examFee: "필기 19,400원 / 실기 22,600원", passingStandard: "필기 평균 60점, 실기 60점 이상"
+  },
+  {
+    id: "urban-planning-engineer", industryId: "construction", name: "도시계획기사", issuer: "한국산업인력공단", level: "전문", type: "국가자격",
+    summary: "도시계획, 토지이용, 교통, 환경과 도시 관련 법규 이해도를 검증합니다.",
+    fitFor: ["도시계획 실무자", "공공개발 담당자", "부동산 개발 기획자"], requiredFor: ["도시계획 수립", "토지이용 분석", "개발 법규 이해"],
+    averagePrepWeeks: 11, officialUrl: "https://www.q-net.or.kr", examFee: "필기 19,400원 / 실기 22,600원", passingStandard: "필기 평균 60점, 실기 60점 이상"
+  },
+  {
+    id: "concrete-engineer", industryId: "construction", name: "콘크리트기사", issuer: "한국산업인력공단", level: "전문", type: "국가자격",
+    summary: "콘크리트 재료, 배합, 품질시험과 구조물 유지관리 역량을 검증합니다.",
+    fitFor: ["품질관리 담당자", "토목 시공 기술자", "건설재료 시험원"], requiredFor: ["콘크리트 품질관리", "재료 시험", "구조물 유지관리"],
+    averagePrepWeeks: 9, officialUrl: "https://www.q-net.or.kr", examFee: "필기 19,400원 / 실기 22,600원", passingStandard: "필기 평균 60점, 실기 60점 이상"
+  },
+  {
+    id: "traffic-engineer", industryId: "construction", name: "교통기사", issuer: "한국산업인력공단", level: "전문", type: "국가자격",
+    summary: "교통계획, 교통공학, 교통안전과 도로 운영 분석 역량을 평가합니다.",
+    fitFor: ["교통계획 담당자", "도로 운영 담당자", "교통 컨설턴트"], requiredFor: ["교통수요 분석", "도로 운영", "교통안전 관리"],
+    averagePrepWeeks: 10, officialUrl: "https://www.q-net.or.kr", examFee: "필기 19,400원 / 실기 22,600원", passingStandard: "필기 평균 60점, 실기 60점 이상"
+  },
+  {
+    id: "computerized-tax-level1", industryId: "business", name: "전산세무 1급", issuer: "한국세무사회", level: "전문", type: "국가공인",
+    summary: "법인세, 소득세, 부가가치세와 회계 프로그램 활용 능력을 평가합니다.",
+    fitFor: ["세무회계 담당자", "회계법인 사무원", "세무사무소 직원"], requiredFor: ["세무 신고", "회계 프로그램", "법인세 실무"],
+    averagePrepWeeks: 12, officialUrl: "https://license.kacpta.or.kr", examFee: "30,000원", passingStandard: "100점 만점 70점 이상"
+  },
+  {
+    id: "computerized-tax-level2", industryId: "business", name: "전산세무 2급", issuer: "한국세무사회", level: "실무", type: "국가공인",
+    summary: "부가가치세, 소득세, 원천징수와 회계 프로그램 활용 역량을 검증합니다.",
+    fitFor: ["회계 사무원", "세무 사무원", "중소기업 경리 담당자"], requiredFor: ["부가세 신고", "원천징수", "전산 회계 처리"],
+    averagePrepWeeks: 8, officialUrl: "https://license.kacpta.or.kr", examFee: "30,000원", passingStandard: "100점 만점 70점 이상"
+  },
+  {
+    id: "erp-production", industryId: "business", name: "ERP정보관리사 생산 2급", issuer: "한국생산성본부", level: "실무", type: "국가공인",
+    summary: "생산계획, 자재, 공정, 원가 관리와 ERP 생산 모듈 활용 능력을 평가합니다.",
+    fitFor: ["생산관리 담당자", "ERP 운영자", "제조 사무원"], requiredFor: ["생산계획", "자재관리", "ERP 생산 모듈"],
+    averagePrepWeeks: 6, officialUrl: "https://license.kpc.or.kr", examFee: "37,000원", passingStandard: "100점 만점 70점 이상"
+  },
+  {
+    id: "erp-hr", industryId: "business", name: "ERP정보관리사 인사 2급", issuer: "한국생산성본부", level: "실무", type: "국가공인",
+    summary: "인사관리, 급여, 근태, 조직 정보와 ERP 인사 모듈 운용 역량을 검증합니다.",
+    fitFor: ["인사 담당자", "급여 담당자", "ERP 운영자"], requiredFor: ["인사정보 관리", "급여 처리", "ERP 인사 모듈"],
+    averagePrepWeeks: 6, officialUrl: "https://license.kpc.or.kr", examFee: "37,000원", passingStandard: "100점 만점 70점 이상"
+  },
+  {
+    id: "smat-service-management", industryId: "business", name: "SMAT 서비스경영자격", issuer: "한국생산성본부", level: "실무", type: "국가공인",
+    summary: "서비스 현장 운영, 고객 응대, 비즈니스 매너와 서비스 품질 관리 역량을 평가합니다.",
+    fitFor: ["고객센터 관리자", "서비스 운영 담당자", "영업 지원 담당자"], requiredFor: ["고객 응대", "서비스 품질관리", "현장 운영"],
+    averagePrepWeeks: 5, officialUrl: "https://license.kpc.or.kr", examFee: "모듈별 상이", passingStandard: "100점 만점 70점 이상"
+  },
+  {
+    id: "privacy-specialist", industryId: "legal", name: "개인정보보호사", issuer: "한국CPO포럼", level: "실무", type: "민간자격",
+    summary: "개인정보보호 법규, 관리체계, 침해 대응과 내부 통제 실무 역량을 검증합니다.",
+    fitFor: ["개인정보 담당자", "컴플라이언스 실무자", "정보보호 담당자"], requiredFor: ["개인정보 법규", "내부관리계획", "침해 대응"],
+    averagePrepWeeks: 6, officialUrl: "https://www.cpoforum.or.kr", examFee: "기관 공고 기준", passingStandard: "시행기관 합격 기준 충족"
+  },
+  {
+    id: "labor-consultant", industryId: "legal", name: "공인노무사", issuer: "한국산업인력공단", level: "고급", type: "국가자격",
+    summary: "노동관계법, 인사노무관리, 노동분쟁 대응 전문성을 평가합니다.",
+    fitFor: ["노무 컨설턴트", "인사노무 전문가", "노동분쟁 담당자"], requiredFor: ["노동법 자문", "인사노무 관리", "분쟁 조정"],
+    averagePrepWeeks: 40, officialUrl: "https://www.q-net.or.kr", examFee: "큐넷 공고 기준", passingStandard: "1차, 2차, 면접 시험 기준 충족"
+  },
+  {
+    id: "certified-legal-manager", industryId: "legal", name: "기업법무관리사", issuer: "한국기업법무협회", level: "전문", type: "민간자격",
+    summary: "계약, 회사법, 지식재산, 분쟁관리 등 기업 법무 실무 역량을 검증합니다.",
+    fitFor: ["법무팀 실무자", "계약 관리자", "컴플라이언스 담당자"], requiredFor: ["계약 검토", "기업 법무", "분쟁관리"],
+    averagePrepWeeks: 10, officialUrl: "https://www.kcla.net", examFee: "기관 공고 기준", passingStandard: "시행기관 합격 기준 충족"
+  },
+  {
+    id: "public-procurement-specialist", industryId: "public", name: "공공조달 실무교육 수료", issuer: "조달청", level: "실무", type: "민간자격",
+    summary: "나라장터, 입찰, 계약, 공공조달 절차를 이해하는 구매·계약 실무 인증입니다.",
+    fitFor: ["공공기관 계약 담당자", "입찰 담당자", "구매 담당자"], requiredFor: ["공공입찰 이해", "계약 절차", "나라장터 활용"],
+    averagePrepWeeks: 3, officialUrl: "https://hrd.pps.go.kr", examFee: "과정별 상이", passingStandard: "교육 과정 이수 기준 충족"
+  },
+  {
+    id: "archives-management-specialist", industryId: "public", name: "기록물관리 전문요원", issuer: "국가기록원", level: "전문", type: "국가자격",
+    summary: "공공기록물 평가, 정리, 보존, 공개와 기록관리 체계 운영 역량을 인정합니다.",
+    fitFor: ["기록물관리 담당자", "공공기관 행정 담당자", "아카이브 운영자"], requiredFor: ["기록물 평가", "보존 관리", "공공기록 법규"],
+    averagePrepWeeks: 16, officialUrl: "https://www.archives.go.kr", examFee: "자격 기준별 상이", passingStandard: "관련 학위·과정·시험 기준 충족"
+  },
+  {
+    id: "six-sigma-green-belt", industryId: "manufacturing", name: "Six Sigma Green Belt", issuer: "한국표준협회 등", level: "실무", type: "민간자격",
+    summary: "공정 개선, 품질 데이터 분석, 문제 해결 방법론을 활용하는 제조 품질 자격입니다.",
+    fitFor: ["품질관리 담당자", "공정개선 담당자", "생산관리자"], requiredFor: ["품질 개선", "통계적 문제해결", "공정 분석"],
+    averagePrepWeeks: 6, officialUrl: "https://www.ksa.or.kr", examFee: "기관별 상이", passingStandard: "시행기관 합격 기준 충족"
+  },
+  {
+    id: "six-sigma-black-belt", industryId: "manufacturing", name: "Six Sigma Black Belt", issuer: "한국표준협회 등", level: "고급", type: "민간자격",
+    summary: "전사 품질 혁신 프로젝트를 이끌 수 있는 고급 통계 분석과 개선 리더십을 인증합니다.",
+    fitFor: ["품질 혁신 리더", "공정개선 전문가", "제조 컨설턴트"], requiredFor: ["개선 프로젝트 리딩", "고급 통계 분석", "품질 전략"],
+    averagePrepWeeks: 12, officialUrl: "https://www.ksa.or.kr", examFee: "기관별 상이", passingStandard: "시행기관 합격 기준 충족"
+  },
+  {
+    id: "industrial-engineer", industryId: "manufacturing", name: "일반기계기사", issuer: "한국산업인력공단", level: "전문", type: "국가자격",
+    summary: "기계재료, 열·유체, 기계설계와 제작법 등 기계 공학 실무 역량을 검증합니다.",
+    fitFor: ["기계 설계자", "설비 엔지니어", "제조 기술자"], requiredFor: ["기계 설계", "설비 이해", "제작 공정"],
+    averagePrepWeeks: 12, officialUrl: "https://www.q-net.or.kr", examFee: "필기 19,400원 / 실기 43,400원", passingStandard: "필기 평균 60점, 실기 60점 이상"
+  },
+  {
+    id: "mechatronics-engineer", industryId: "manufacturing", name: "메카트로닉스기사", issuer: "한국산업인력공단", level: "전문", type: "국가자격",
+    summary: "기계, 전기전자, 제어, 자동화를 융합한 제조 설비 기술 역량을 평가합니다.",
+    fitFor: ["자동화 설비 엔지니어", "스마트팩토리 담당자", "제어 기술자"], requiredFor: ["자동화 제어", "기계·전기 융합", "설비 진단"],
+    averagePrepWeeks: 11, officialUrl: "https://www.q-net.or.kr", examFee: "필기 19,400원 / 실기 22,600원", passingStandard: "필기 평균 60점, 실기 60점 이상"
+  },
+  {
+    id: "semiconductor-equipment-maintenance", industryId: "manufacturing", name: "반도체설비보전기능사", issuer: "한국산업인력공단", level: "입문", type: "국가자격",
+    summary: "반도체 제조 설비 점검, 유지보수, 안전관리 기초 역량을 평가합니다.",
+    fitFor: ["반도체 설비 오퍼레이터", "설비보전 담당자", "제조 현장 기술자"], requiredFor: ["설비 점검", "예방보전", "반도체 공정 이해"],
+    averagePrepWeeks: 7, officialUrl: "https://www.q-net.or.kr", examFee: "필기 14,500원 / 실기 공고 기준", passingStandard: "필기 60점, 실기 60점 이상"
+  },
+  {
+    id: "renewable-energy-industrial", industryId: "energy", name: "신재생에너지발전설비산업기사", issuer: "한국산업인력공단", level: "실무", type: "국가자격",
+    summary: "태양광 등 신재생 발전설비 설계, 시공, 운영과 안전관리 실무를 검증합니다.",
+    fitFor: ["신재생 설비 담당자", "전기 시공 실무자", "에너지 운영자"], requiredFor: ["발전설비 운영", "전기 안전", "신재생 설비 시공"],
+    averagePrepWeeks: 9, officialUrl: "https://www.q-net.or.kr", examFee: "필기 19,400원 / 실기 20,800원", passingStandard: "필기 평균 60점, 실기 60점 이상"
+  },
+  {
+    id: "electric-industrial-engineer", industryId: "energy", name: "전기산업기사", issuer: "한국산업인력공단", level: "실무", type: "국가자격",
+    summary: "전기설비, 회로, 전력공학과 전기기기 운영 실무 역량을 평가합니다.",
+    fitFor: ["전기설비 운영자", "시설관리 담당자", "전기공사 실무자"], requiredFor: ["전기설비 관리", "회로 이해", "전기 안전"],
+    averagePrepWeeks: 10, officialUrl: "https://www.q-net.or.kr", examFee: "필기 19,400원 / 실기 20,800원", passingStandard: "필기 평균 60점, 실기 60점 이상"
+  },
+  {
+    id: "video-editing-specialist", industryId: "media", name: "영상편집전문인", issuer: "민간 자격 시행기관", level: "실무", type: "민간자격",
+    summary: "디지털 영상 편집, 색보정, 자막, 사운드와 콘텐츠 후반 제작 역량을 평가합니다.",
+    fitFor: ["영상 편집자", "콘텐츠 제작자", "마케팅 영상 담당자"], requiredFor: ["영상 편집", "후반 제작", "콘텐츠 품질관리"],
+    averagePrepWeeks: 6, officialUrl: "https://www.pqi.or.kr", examFee: "기관별 상이", passingStandard: "시행기관 합격 기준 충족"
+  },
+  {
+    id: "adobe-premiere-professional", industryId: "media", name: "Adobe Certified Professional Premiere Pro", issuer: "Adobe", level: "실무", type: "국제자격",
+    summary: "Premiere Pro 기반 영상 편집, 프로젝트 관리, 출력 워크플로 역량을 인증합니다.",
+    fitFor: ["영상 편집자", "콘텐츠 크리에이터", "소셜 미디어 제작자"], requiredFor: ["영상 편집", "타임라인 관리", "영상 출력"],
+    averagePrepWeeks: 6, officialUrl: "https://certifiedprofessional.adobe.com", examFee: "시험센터별 상이", passingStandard: "Adobe 인증시험 기준 충족"
+  },
+  {
+    id: "tourism-interpreter-guide", industryId: "hospitality", name: "관광통역안내사", issuer: "한국산업인력공단", level: "전문", type: "국가자격",
+    summary: "외국어 안내, 관광자원, 관광법규와 한국 문화 설명 역량을 검증합니다.",
+    fitFor: ["관광 가이드", "여행사 담당자", "문화관광 해설 인력"], requiredFor: ["관광 안내", "외국어 설명", "관광 법규"],
+    averagePrepWeeks: 12, officialUrl: "https://www.q-net.or.kr", examFee: "큐넷 공고 기준", passingStandard: "필기, 외국어, 면접 기준 충족"
+  },
+  {
+    id: "hotel-service-specialist", industryId: "hospitality", name: "호텔서비스사", issuer: "한국산업인력공단", level: "실무", type: "국가자격",
+    summary: "호텔 객실, 식음, 고객 응대, 서비스 매너와 관광 서비스 기초 역량을 평가합니다.",
+    fitFor: ["호텔 서비스 직원", "리조트 운영 담당자", "관광 서비스 담당자"], requiredFor: ["고객 응대", "호텔 서비스", "서비스 매너"],
+    averagePrepWeeks: 6, officialUrl: "https://www.q-net.or.kr", examFee: "큐넷 공고 기준", passingStandard: "필기 및 면접 기준 충족"
+  },
+  {
+    id: "convention-planner", industryId: "hospitality", name: "컨벤션기획사 2급", issuer: "한국산업인력공단", level: "실무", type: "국가자격",
+    summary: "전시, 회의, 이벤트 기획과 운영, 예산, 마케팅 실무 역량을 검증합니다.",
+    fitFor: ["MICE 기획자", "행사 운영 담당자", "전시 컨벤션 실무자"], requiredFor: ["행사 기획", "컨벤션 운영", "예산·마케팅"],
+    averagePrepWeeks: 8, officialUrl: "https://www.q-net.or.kr", examFee: "필기·실기 공고 기준", passingStandard: "필기 평균 60점, 실기 60점 이상"
   }
 ];
 
