@@ -686,6 +686,7 @@ export function App() {
     password: "",
   });
   const roadmapDetailRef = useRef<HTMLElement | null>(null);
+  const exploreDetailRef = useRef<HTMLElement | null>(null);
 
   function navigate(nextView: View) {
     setView(nextView);
@@ -701,6 +702,16 @@ export function App() {
     setSelectedRoadmapId(certificationId);
     window.setTimeout(() => {
       roadmapDetailRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 0);
+  }
+
+  function selectExploreCertification(certificationId: string) {
+    setSelectedId(certificationId);
+    window.setTimeout(() => {
+      exploreDetailRef.current?.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
@@ -1672,7 +1683,8 @@ export function App() {
               <CertificationDetailPanel
                 certification={selectedCertification}
                 industryName={selectedIndustryInfo?.name}
-                className="detail-panel--featured"
+                className="detail-panel--featured explore-detail"
+                detailRef={exploreDetailRef}
               />
             )}
 
@@ -1683,7 +1695,7 @@ export function App() {
                   <button
                     className={`cert-card ${selectedCertification?.id === certification.id ? "is-selected" : ""}`}
                     key={certification.id}
-                    onClick={() => setSelectedId(certification.id)}
+                    onClick={() => selectExploreCertification(certification.id)}
                     type="button"
                   >
                     <span className="cert-card__meta">

@@ -876,7 +876,8 @@ main {
     #fffdf8;
 }
 
-.roadmap-detail {
+.roadmap-detail,
+.explore-detail {
   grid-column: 1 / -1;
   scroll-margin-top: 96px;
 }
