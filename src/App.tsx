@@ -42,6 +42,7 @@ type View =
   | "explore"
   | "schedule"
   | "jobs"
+  | "eligibility"
   | "roadmap"
   | "portfolio"
   | "login";
@@ -61,6 +62,42 @@ type StoredUser = AuthUser & {
 
 const AUTH_SESSION_KEY = "certimap-auth-session";
 const AUTH_USERS_KEY = "certimap-auth-users";
+const GUEST_PROFILE_KEY = "certimap-eligibility-profile:guest";
+
+type EducationLevel = "highschool" | "associate" | "bachelor" | "master" | "doctor";
+type CareerLevel = "new" | "junior" | "experienced";
+
+type CandidateProfile = {
+  educationLevel: EducationLevel;
+  major: string;
+  school: string;
+  completedCourses: string;
+  careerLevel: CareerLevel;
+  preferredIndustries: IndustryId[];
+};
+
+const defaultCandidateProfile: CandidateProfile = {
+  educationLevel: "bachelor",
+  major: "",
+  school: "",
+  completedCourses: "",
+  careerLevel: "new",
+  preferredIndustries: [],
+};
+
+const educationLabels: Record<EducationLevel, string> = {
+  highschool: "고졸",
+  associate: "전문학사",
+  bachelor: "학사",
+  master: "석사",
+  doctor: "박사",
+};
+
+const careerLabels: Record<CareerLevel, string> = {
+  new: "신입",
+  junior: "1~3년",
+  experienced: "경력",
+};
 
 const iconByIndustry: Record<IndustryId, typeof Cpu> = {
   it: Cpu,
@@ -377,6 +414,7 @@ const viewLabels: Record<View, string> = {
   explore: "자격증 찾기",
   schedule: "일정 보기",
   jobs: "채용 공고",
+  eligibility: "응시자격 매칭",
   roadmap: "로드맵 추천",
   portfolio: "보유 자격 분석",
   login: "로그인",
@@ -388,6 +426,7 @@ function getInitialView(): View {
     hash === "explore" ||
     hash === "schedule" ||
     hash === "jobs" ||
+    hash === "eligibility" ||
     hash === "roadmap" ||
     hash === "portfolio" ||
     hash === "login"
@@ -591,6 +630,10 @@ function getOwnedStorageKey(userId: string) {
   return `certimap-owned-certifications:${userId}`;
 }
 
+function getCandidateProfileStorageKey(userId?: string) {
+  return userId ? `certimap-eligibility-profile:${userId}` : GUEST_PROFILE_KEY;
+}
+
 type CertificationDetailPanelProps = {
   certification: Certification;
   industryName?: string;
@@ -715,6 +758,9 @@ export function App() {
     name: "",
     password: "",
   });
+  const [candidateProfile, setCandidateProfile] =
+    useState<CandidateProfile>(defaultCandidateProfile);
+  const [candidateProfileMessage, setCandidateProfileMessage] = useState("");
   const roadmapDetailRef = useRef<HTMLElement | null>(null);
   const exploreDetailRef = useRef<HTMLElement | null>(null);
 
@@ -813,6 +859,12 @@ export function App() {
     window.localStorage.removeItem(AUTH_SESSION_KEY);
     setAuthUser(null);
     setOwnedCertificationIds([]);
+    setCandidateProfile(
+      readJson<CandidateProfile>(
+        getCandidateProfileStorageKey(),
+        defaultCandidateProfile,
+      ),
+    );
     setAuthMessage("로그아웃되었습니다.");
   }
 
@@ -854,6 +906,22 @@ export function App() {
     setOwnedCertificationIds(
       readJson<string[]>(getOwnedStorageKey(authUser.id), []),
     );
+    setCandidateProfile(
+      readJson<CandidateProfile>(
+        getCandidateProfileStorageKey(authUser.id),
+        defaultCandidateProfile,
+      ),
+    );
+  }, [authUser]);
+
+  useEffect(() => {
+    if (authUser) return;
+    setCandidateProfile(
+      readJson<CandidateProfile>(
+        getCandidateProfileStorageKey(),
+        defaultCandidateProfile,
+      ),
+    );
   }, [authUser]);
 
   useEffect(() => {
@@ -863,6 +931,27 @@ export function App() {
       JSON.stringify(ownedCertificationIds),
     );
   }, [authUser, ownedCertificationIds]);
+
+  function saveCandidateProfile() {
+    window.localStorage.setItem(
+      getCandidateProfileStorageKey(authUser?.id),
+      JSON.stringify(candidateProfile),
+    );
+    setCandidateProfileMessage(
+      authUser
+        ? "응시자격 프로필이 계정에 저장되었습니다."
+        : "응시자격 프로필이 이 브라우저에 저장되었습니다.",
+    );
+  }
+
+  function togglePreferredIndustry(industryId: IndustryId) {
+    setCandidateProfile((current) => ({
+      ...current,
+      preferredIndustries: current.preferredIndustries.includes(industryId)
+        ? current.preferredIndustries.filter((id) => id !== industryId)
+        : [...current.preferredIndustries, industryId],
+    }));
+  }
 
   const industries = catalog?.industries ?? [];
   const certifications = catalog?.certifications ?? [];
@@ -896,6 +985,80 @@ export function App() {
       return matchesNcs && matchesQuery;
     });
   }, [jobQuery, publicJobs, selectedJobNcs]);
+
+  const eligibilityJobRecommendations = useMemo(() => {
+    const profileSignals = [
+      candidateProfile.major,
+      candidateProfile.school,
+      candidateProfile.completedCourses,
+    ]
+      .join(" ")
+      .toLowerCase()
+      .split(/[\s,·/()]+/)
+      .filter((word) => word.length > 1);
+
+    return publicJobs
+      .map((job) => {
+        const jobText = getJobText(job);
+        const preferredIndustryMatches =
+          candidateProfile.preferredIndustries.filter((industryId) =>
+            jobKeywordsByIndustry[industryId].some((keyword) =>
+              jobText.includes(keyword.toLowerCase()),
+            ),
+          );
+        const profileMatches = profileSignals.filter((signal) =>
+          jobText.includes(signal),
+        );
+        const careerScore =
+          candidateProfile.careerLevel === "new" && job.careerType.includes("신입")
+            ? 24
+            : candidateProfile.careerLevel !== "new" &&
+                job.careerType.includes("경력")
+              ? 24
+              : job.careerType.includes("신입+경력")
+                ? 16
+                : 0;
+        const educationScore =
+          candidateProfile.educationLevel === "master" ||
+          candidateProfile.educationLevel === "doctor"
+            ? 14
+            : candidateProfile.educationLevel === "bachelor"
+              ? 12
+              : candidateProfile.educationLevel === "associate"
+                ? 8
+                : 5;
+        const score =
+          careerScore +
+          educationScore +
+          preferredIndustryMatches.length * 24 +
+          profileMatches.length * 7;
+        const reasons = [
+          careerScore > 0
+            ? `${careerLabels[candidateProfile.careerLevel]} 조건과 연결`
+            : "",
+          ...preferredIndustryMatches
+            .map(
+              (industryId) =>
+                industries.find((industry) => industry.id === industryId)
+                  ?.name,
+            )
+            .filter(Boolean)
+            .map((name) => `${name} 선호 분야 연결`),
+          ...profileMatches.slice(0, 2).map((signal) => `${signal} 키워드 반영`),
+          `${educationLabels[candidateProfile.educationLevel]} 기준 반영`,
+        ].filter(Boolean);
+
+        return {
+          job,
+          score,
+          status: score >= 55 ? "응시 가능성 높음" : "요건 확인 필요",
+          reasons: Array.from(new Set(reasons)).slice(0, 4),
+        };
+      })
+      .filter((item) => item.score > 20)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8);
+  }, [candidateProfile, industries, publicJobs]);
 
   const filtered = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -1181,7 +1344,14 @@ export function App() {
         </button>
         <div className="nav__links">
           {(
-            ["explore", "schedule", "jobs", "roadmap", "portfolio"] as View[]
+            [
+              "explore",
+              "schedule",
+              "jobs",
+              "eligibility",
+              "roadmap",
+              "portfolio",
+            ] as View[]
           ).map((item) => (
             <button
               className={view === item ? "is-active" : ""}
@@ -1266,6 +1436,14 @@ export function App() {
                 </button>
                 <button
                   className="button button--ghost"
+                  onClick={() => navigate("eligibility")}
+                  type="button"
+                >
+                  <GraduationCap size={18} aria-hidden="true" />
+                  응시자격 매칭
+                </button>
+                <button
+                  className="button button--ghost"
                   onClick={() => navigate("portfolio")}
                   type="button"
                 >
@@ -1327,6 +1505,14 @@ export function App() {
                 이미 취득한 자격증을 바탕으로 산업군과 다음 자격을 추천합니다.
               </span>
             </button>
+            <button onClick={() => navigate("eligibility")} type="button">
+              <GraduationCap aria-hidden="true" />
+              <strong>응시자격 매칭</strong>
+              <span>
+                전공, 학력, 이수과정, 경력 수준으로 지원 가능한 공고를
+                추천합니다.
+              </span>
+            </button>
           </section>
 
           <section className="story" id="story">
@@ -1354,6 +1540,7 @@ export function App() {
             {view === "explore" && "자격증 찾기"}
             {view === "schedule" && "시험 일정 보기"}
             {view === "jobs" && "공기업 채용 공고"}
+            {view === "eligibility" && "응시자격 매칭"}
             {view === "roadmap" && "로드맵 추천"}
             {view === "portfolio" && "보유 자격 분석"}
             {view === "login" && "로그인"}
@@ -1365,6 +1552,8 @@ export function App() {
               "접수 기간, 시험일, 발표일을 자격증별로 한눈에 확인하세요."}
             {view === "jobs" &&
               "ALIO 공개 채용 정보를 바탕으로 진행 중인 공공기관 채용 공고를 확인하세요."}
+            {view === "eligibility" &&
+              "전공, 학력, 이수과정, 경력 수준을 저장하고 응시 가능성이 높은 채용 공고를 확인하세요."}
             {view === "roadmap" &&
               "목표 직무에 맞는 핵심 자격과 있으면 좋은 자격을 단계별로 추천합니다."}
             {view === "portfolio" &&
@@ -1586,6 +1775,217 @@ export function App() {
                 조정해보세요.
               </p>
             )}
+          </div>
+        </section>
+      )}
+
+      {view === "eligibility" && (
+        <section className="eligibility-page">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Eligibility Match</p>
+              <h2>내 응시자격 기반 채용 공고 추천</h2>
+            </div>
+            <p className="section-copy">
+              입력한 전공, 학력, 이수과정, 경력 수준을 저장하고 공기업 채용
+              공고 중 지원 가능성이 높은 공고를 우선 확인합니다.
+            </p>
+          </div>
+
+          {!authUser && (
+            <section className="login-notice" aria-label="로그인 안내">
+              <div>
+                <p className="eyebrow">Browser Save</p>
+                <h3>로그인하면 응시자격 프로필을 계정별로 저장할 수 있습니다.</h3>
+                <p>
+                  비로그인 상태에서는 현재 브라우저에만 저장됩니다. 다른 기기에서
+                  이어보려면 로그인 후 저장해주세요.
+                </p>
+              </div>
+              <button type="button" onClick={() => navigate("login")}>
+                로그인 페이지로 이동
+              </button>
+            </section>
+          )}
+
+          <div className="eligibility-layout">
+            <section className="eligibility-form" aria-label="응시자격 프로필">
+              <div className="panel-heading">
+                <div>
+                  <p className="eyebrow">Candidate Profile</p>
+                  <h3>지원자 정보</h3>
+                </div>
+              </div>
+
+              <div className="profile-fields">
+                <label>
+                  <span>최종 학력</span>
+                  <select
+                    value={candidateProfile.educationLevel}
+                    onChange={(event) =>
+                      setCandidateProfile((current) => ({
+                        ...current,
+                        educationLevel: event.target.value as EducationLevel,
+                      }))
+                    }
+                  >
+                    {Object.entries(educationLabels).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <span>목표 경력 수준</span>
+                  <select
+                    value={candidateProfile.careerLevel}
+                    onChange={(event) =>
+                      setCandidateProfile((current) => ({
+                        ...current,
+                        careerLevel: event.target.value as CareerLevel,
+                      }))
+                    }
+                  >
+                    {Object.entries(careerLabels).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <span>전공</span>
+                  <input
+                    value={candidateProfile.major}
+                    onChange={(event) =>
+                      setCandidateProfile((current) => ({
+                        ...current,
+                        major: event.target.value,
+                      }))
+                    }
+                    placeholder="예: 컴퓨터공학, 경영학, 전기공학"
+                  />
+                </label>
+                <label>
+                  <span>학교/학벌 정보</span>
+                  <input
+                    value={candidateProfile.school}
+                    onChange={(event) =>
+                      setCandidateProfile((current) => ({
+                        ...current,
+                        school: event.target.value,
+                      }))
+                    }
+                    placeholder="예: 4년제, 전문대, 지역인재, 블라인드 채용"
+                  />
+                </label>
+                <label className="profile-fields__wide">
+                  <span>이수과정/교육/부트캠프</span>
+                  <textarea
+                    value={candidateProfile.completedCourses}
+                    onChange={(event) =>
+                      setCandidateProfile((current) => ({
+                        ...current,
+                        completedCourses: event.target.value,
+                      }))
+                    }
+                    placeholder="예: 데이터 분석 부트캠프, 전기안전 교육, NCS 사무행정 과정"
+                  />
+                </label>
+              </div>
+
+              <div className="preferred-industries">
+                <span>관심 산업 분야</span>
+                <div className="filters">
+                  {industries.map((industry) => {
+                    const Icon = iconByIndustry[industry.id];
+                    return (
+                      <button
+                        className={
+                          candidateProfile.preferredIndustries.includes(
+                            industry.id,
+                          )
+                            ? "is-active"
+                            : ""
+                        }
+                        key={industry.id}
+                        onClick={() => togglePreferredIndustry(industry.id)}
+                        type="button"
+                      >
+                        <Icon size={16} aria-hidden="true" />
+                        {industry.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="eligibility-form__actions">
+                <button type="button" onClick={saveCandidateProfile}>
+                  프로필 저장
+                </button>
+                {candidateProfileMessage && (
+                  <span>{candidateProfileMessage}</span>
+                )}
+              </div>
+            </section>
+
+            <section className="eligibility-results" aria-label="추천 채용 공고">
+              <div className="panel-heading">
+                <div>
+                  <p className="eyebrow">Matched Jobs</p>
+                  <h3>응시 가능성 높은 공고</h3>
+                </div>
+                <strong>{eligibilityJobRecommendations.length}건</strong>
+              </div>
+
+              {eligibilityJobRecommendations.length > 0 ? (
+                <div className="portfolio-job-list">
+                  {eligibilityJobRecommendations.map(
+                    ({ job, score, status, reasons }) => (
+                      <article className="portfolio-job-card" key={job.id}>
+                        <div className="portfolio-job-card__top">
+                          <div>
+                            <span>{job.organization}</span>
+                            <h4>{job.title}</h4>
+                          </div>
+                          <strong>{score}점</strong>
+                        </div>
+                        <div className="eligibility-status">
+                          <span>{status}</span>
+                        </div>
+                        <div className="portfolio-job-card__reasons">
+                          {reasons.map((reason) => (
+                            <span key={`${job.id}-${reason}`}>{reason}</span>
+                          ))}
+                        </div>
+                        <div className="job-card__meta">
+                          <span>근무지 {job.location}</span>
+                          <span>{job.employmentType}</span>
+                          <span>{job.careerType}</span>
+                          <span>모집 {job.headcount}</span>
+                        </div>
+                        <div className="portfolio-job-card__actions">
+                          <span>
+                            접수 {job.startDate} - {job.endDate}
+                          </span>
+                          <a href={job.sourceUrl} target="_blank" rel="noreferrer">
+                            공고 원문 확인
+                            <ArrowUpRight size={15} aria-hidden="true" />
+                          </a>
+                        </div>
+                      </article>
+                    ),
+                  )}
+                </div>
+              ) : (
+                <p className="empty-copy">
+                  아직 추천할 공고가 없습니다. 관심 산업 분야나 이수과정 키워드를
+                  추가해보세요.
+                </p>
+              )}
+            </section>
           </div>
         </section>
       )}

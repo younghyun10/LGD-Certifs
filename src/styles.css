@@ -411,6 +411,7 @@ main {
 .portfolio,
 .login-page,
 .jobs-page,
+.eligibility-page,
 .schedule-page {
   width: min(1180px, calc(100% - 40px));
   margin: 36px auto 96px;
@@ -1175,6 +1176,13 @@ main {
   align-items: start;
 }
 
+.eligibility-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
+  gap: 18px;
+  align-items: start;
+}
+
 .auth-panel {
   display: grid;
   grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
@@ -1311,6 +1319,8 @@ main {
 .owned-panel,
 .industry-match-panel,
 .portfolio-job-panel,
+.eligibility-form,
+.eligibility-results,
 .next-cert-panel {
   border: 1px solid #ded8cf;
   border-radius: 8px;
@@ -1318,7 +1328,9 @@ main {
 }
 
 .portfolio-builder,
-.owned-panel {
+.owned-panel,
+.eligibility-form,
+.eligibility-results {
   padding: 18px;
 }
 
@@ -1328,6 +1340,89 @@ main {
   margin-top: 12px;
   max-height: 410px;
   overflow: auto;
+}
+
+.profile-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.profile-fields label {
+  display: grid;
+  gap: 7px;
+}
+
+.profile-fields label span,
+.preferred-industries > span {
+  color: #59615f;
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+.profile-fields input,
+.profile-fields select,
+.profile-fields textarea {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid #d8d1c6;
+  border-radius: 8px;
+  padding: 0 13px;
+  color: #17201f;
+  background: #fffdf8;
+}
+
+.profile-fields textarea {
+  min-height: 104px;
+  padding: 12px 13px;
+  resize: vertical;
+}
+
+.profile-fields__wide {
+  grid-column: 1 / -1;
+}
+
+.preferred-industries {
+  display: grid;
+  gap: 9px;
+  margin-top: 16px;
+}
+
+.eligibility-form__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.eligibility-form__actions button {
+  min-height: 42px;
+  border: 1px solid #45d7c1;
+  border-radius: 8px;
+  padding: 0 14px;
+  color: #06201d;
+  background: #45d7c1;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.eligibility-form__actions span {
+  color: #0b716b;
+  font-weight: 900;
+}
+
+.eligibility-status {
+  display: flex;
+}
+
+.eligibility-status span {
+  padding: 8px 10px;
+  border-radius: 999px;
+  color: #06201d;
+  background: #d8f8f0;
+  font-size: 0.84rem;
+  font-weight: 900;
 }
 
 .owned-search-results button {
@@ -1612,6 +1707,7 @@ main {
   .workspace,
   .roadmap-panel,
   .portfolio-layout,
+  .eligibility-layout,
   .auth-panel,
   .login-notice,
   .home-actions,
@@ -1662,6 +1758,10 @@ main {
     align-items: stretch;
     flex-direction: column;
   }
+
+  .profile-fields {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
@@ -1691,6 +1791,7 @@ main {
   .portfolio,
   .login-page,
   .jobs-page,
+  .eligibility-page,
   .home-actions,
   .story {
     width: min(100% - 28px, 1180px);
