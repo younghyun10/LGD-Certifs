@@ -1110,6 +1110,306 @@ const additionalCertifications: Omit<Certification, "schedules">[] = [
     summary: "전시, 회의, 이벤트 기획과 운영, 예산, 마케팅 실무 역량을 검증합니다.",
     fitFor: ["MICE 기획자", "행사 운영 담당자", "전시 컨벤션 실무자"], requiredFor: ["행사 기획", "컨벤션 운영", "예산·마케팅"],
     averagePrepWeeks: 8, officialUrl: "https://www.q-net.or.kr", examFee: "필기·실기 공고 기준", passingStandard: "필기 평균 60점, 실기 60점 이상"
+  },
+  {
+    id: "toeic-listening-reading", industryId: "business", name: "TOEIC Listening & Reading", issuer: "ETS", level: "입문", type: "국제자격",
+    summary: "비즈니스 영어 독해와 청해 능력을 객관식 시험으로 측정하는 대표 취업 어학 시험입니다.",
+    fitFor: ["대기업 지원자", "공기업 지원자", "해외영업 지원자"], requiredFor: ["비즈니스 영어 이해", "공문서 독해", "기초 어학 역량"],
+    averagePrepWeeks: 8, officialUrl: "https://www.toeic.co.kr", examFee: "정기접수 기준 공고 확인", passingStandard: "990점 만점 점수제"
+  },
+  {
+    id: "toeic-speaking", industryId: "business", name: "TOEIC Speaking", issuer: "ETS", level: "실무", type: "국제자격",
+    summary: "업무 상황에서의 영어 말하기, 의견 제시, 자료 설명 능력을 평가하는 스피킹 시험입니다.",
+    fitFor: ["해외영업 지원자", "항공·호텔 지원자", "글로벌 직무 지원자"], requiredFor: ["영어 말하기", "자료 설명", "업무 커뮤니케이션"],
+    averagePrepWeeks: 5, officialUrl: "https://www.toeicswt.co.kr", examFee: "정기접수 기준 공고 확인", passingStandard: "200점 만점 점수제"
+  },
+  {
+    id: "opic-english", industryId: "business", name: "OPIc 영어", issuer: "ACTFL", level: "실무", type: "국제자격",
+    summary: "상황별 영어 회화 능력과 즉흥적 의사소통 역량을 등급으로 평가하는 어학 시험입니다.",
+    fitFor: ["대기업 지원자", "외국계 기업 지원자", "서비스 직무 지원자"], requiredFor: ["영어 회화", "상황 대응", "업무 커뮤니케이션"],
+    averagePrepWeeks: 5, officialUrl: "https://www.opic.or.kr", examFee: "시험 공고 기준", passingStandard: "Novice부터 Advanced Low까지 등급제"
+  },
+  {
+    id: "ielts-academic", industryId: "education", name: "IELTS Academic", issuer: "British Council·IDP·Cambridge", level: "전문", type: "국제자격",
+    summary: "유학, 글로벌 인턴십, 해외 취업에서 활용되는 영어 읽기, 듣기, 쓰기, 말하기 시험입니다.",
+    fitFor: ["해외 대학원 지원자", "글로벌 인턴 지원자", "외국계 지원자"], requiredFor: ["학술 영어", "영어 작문", "영어 인터뷰"],
+    averagePrepWeeks: 12, officialUrl: "https://ieltskorea.org", examFee: "시험 유형별 상이", passingStandard: "9.0 밴드 점수제"
+  },
+  {
+    id: "toefl-ibt", industryId: "education", name: "TOEFL iBT", issuer: "ETS", level: "전문", type: "국제자격",
+    summary: "해외 대학, 교환학생, 글로벌 프로그램 지원에 쓰이는 학술 영어 능력 시험입니다.",
+    fitFor: ["유학 준비생", "교환학생 지원자", "국제기구 인턴 지원자"], requiredFor: ["학술 독해", "영어 발표", "영어 작문"],
+    averagePrepWeeks: 12, officialUrl: "https://www.ets.org/toefl", examFee: "국가별 상이", passingStandard: "120점 만점 점수제"
+  },
+  {
+    id: "jlpt-n2", industryId: "business", name: "JLPT N2", issuer: "일본국제교류기금·일본국제교육지원협회", level: "실무", type: "국제자격",
+    summary: "일본어 독해, 청해, 어휘 능력을 검증하는 취업 활용도가 높은 중상급 일본어 시험입니다.",
+    fitFor: ["일본계 기업 지원자", "무역 사무원", "관광 서비스 지원자"], requiredFor: ["일본어 독해", "일본어 청해", "비즈니스 일본어 기초"],
+    averagePrepWeeks: 14, officialUrl: "https://www.jlpt.jp", examFee: "시험지역별 상이", passingStandard: "180점 만점 중 등급별 기준 충족"
+  },
+  {
+    id: "jpt", industryId: "business", name: "JPT", issuer: "YBM", level: "실무", type: "민간자격",
+    summary: "실무 일본어 청해와 독해 능력을 점수로 평가해 일본계·무역 직무에서 활용됩니다.",
+    fitFor: ["일본계 기업 지원자", "무역 사무원", "항공·관광 지원자"], requiredFor: ["일본어 청해", "일본어 독해", "비즈니스 일본어"],
+    averagePrepWeeks: 8, officialUrl: "https://www.jpt.co.kr", examFee: "정기접수 기준 공고 확인", passingStandard: "990점 만점 점수제"
+  },
+  {
+    id: "hsk-level5", industryId: "business", name: "HSK 5급", issuer: "중국교육부 중외언어교류협력센터", level: "실무", type: "국제자격",
+    summary: "중국어 독해, 듣기, 쓰기 능력을 평가하는 중국어 대표 시험의 중상급 단계입니다.",
+    fitFor: ["중국계 기업 지원자", "해외영업 지원자", "무역 사무원"], requiredFor: ["중국어 독해", "중국어 작문", "비즈니스 중국어"],
+    averagePrepWeeks: 14, officialUrl: "https://www.hsk.or.kr", examFee: "급수별 상이", passingStandard: "300점 만점 점수제"
+  },
+  {
+    id: "kbs-korean-language", industryId: "media", name: "KBS 한국어능력시험", issuer: "KBS한국어진흥원", level: "실무", type: "민간자격",
+    summary: "국어 사용 능력, 문법, 이해, 표현 역량을 평가해 언론·공기업 지원에서 활용됩니다.",
+    fitFor: ["언론사 지원자", "공기업 지원자", "홍보 직무 지원자"], requiredFor: ["국어 문법", "문서 이해", "표현 능력"],
+    averagePrepWeeks: 6, officialUrl: "https://www.klt.or.kr", examFee: "시험 공고 기준", passingStandard: "등급제"
+  },
+  {
+    id: "korean-history-advanced", industryId: "public", name: "한국사능력검정시험 심화", issuer: "국사편찬위원회", level: "입문", type: "국가자격",
+    summary: "한국사 지식과 역사적 사고력을 평가하며 공기업, 공무원, 교원 임용 준비에 폭넓게 활용됩니다.",
+    fitFor: ["공기업 지원자", "공무원 준비생", "교원 임용 준비생"], requiredFor: ["한국사 이해", "공공기관 가산점", "역사 자료 해석"],
+    averagePrepWeeks: 5, officialUrl: "https://www.historyexam.go.kr", examFee: "급수별 상이", passingStandard: "심화 1·2·3급 등급제"
+  },
+  {
+    id: "mos-excel-expert", industryId: "business", name: "MOS Excel Expert", issuer: "Microsoft", level: "실무", type: "국제자격",
+    summary: "Excel 고급 함수, 데이터 분석, 피벗, 문서 자동화 등 사무 실무 역량을 인증합니다.",
+    fitFor: ["사무직 지원자", "영업관리 지원자", "데이터 보조 담당자"], requiredFor: ["스프레드시트 활용", "데이터 정리", "보고서 작성"],
+    averagePrepWeeks: 4, officialUrl: "https://certiport.pearsonvue.com/Certifications/Microsoft/MOS/Overview", examFee: "시험센터별 상이", passingStandard: "Microsoft 인증 기준 충족"
+  },
+  {
+    id: "mos-powerpoint", industryId: "business", name: "MOS PowerPoint", issuer: "Microsoft", level: "입문", type: "국제자격",
+    summary: "프레젠테이션 작성, 슬라이드 디자인, 도표 구성과 발표 자료 제작 역량을 인증합니다.",
+    fitFor: ["기획 직무 지원자", "영업 지원자", "마케팅 지원자"], requiredFor: ["발표자료 제작", "문서 시각화", "프레젠테이션 구성"],
+    averagePrepWeeks: 3, officialUrl: "https://certiport.pearsonvue.com/Certifications/Microsoft/MOS/Overview", examFee: "시험센터별 상이", passingStandard: "Microsoft 인증 기준 충족"
+  },
+  {
+    id: "mos-word", industryId: "business", name: "MOS Word", issuer: "Microsoft", level: "입문", type: "국제자격",
+    summary: "Word 문서 작성, 서식, 표, 참조 기능을 활용한 업무 문서 작성 능력을 인증합니다.",
+    fitFor: ["사무직 지원자", "행정 지원자", "비서 직무 지원자"], requiredFor: ["문서 작성", "서식 관리", "보고서 편집"],
+    averagePrepWeeks: 3, officialUrl: "https://certiport.pearsonvue.com/Certifications/Microsoft/MOS/Overview", examFee: "시험센터별 상이", passingStandard: "Microsoft 인증 기준 충족"
+  },
+  {
+    id: "itq-excel", industryId: "business", name: "ITQ Excel", issuer: "한국생산성본부", level: "입문", type: "국가공인",
+    summary: "엑셀 표 계산, 함수, 차트, 데이터 관리 능력을 평가하는 사무 자동화 입문 자격입니다.",
+    fitFor: ["사무보조 지원자", "경영지원 지원자", "공기업 체험형 인턴"], requiredFor: ["엑셀 함수", "표 계산", "데이터 정리"],
+    averagePrepWeeks: 4, officialUrl: "https://license.kpc.or.kr", examFee: "과목별 공고 기준", passingStandard: "A·B·C 등급제"
+  },
+  {
+    id: "itq-hwp", industryId: "business", name: "ITQ 한글", issuer: "한국생산성본부", level: "입문", type: "국가공인",
+    summary: "한글 문서 편집, 표 작성, 공문서 서식 구성 능력을 평가하는 문서 실무 자격입니다.",
+    fitFor: ["행정 지원자", "공공기관 인턴", "사무보조 지원자"], requiredFor: ["한글 문서 작성", "공문서 편집", "표 구성"],
+    averagePrepWeeks: 4, officialUrl: "https://license.kpc.or.kr", examFee: "과목별 공고 기준", passingStandard: "A·B·C 등급제"
+  },
+  {
+    id: "itq-powerpoint", industryId: "business", name: "ITQ PowerPoint", issuer: "한국생산성본부", level: "입문", type: "국가공인",
+    summary: "파워포인트 슬라이드 제작, 도형, 차트, 발표 자료 구성 능력을 평가합니다.",
+    fitFor: ["기획 지원자", "영업 지원자", "교육 운영 지원자"], requiredFor: ["슬라이드 제작", "자료 시각화", "발표 문서 작성"],
+    averagePrepWeeks: 4, officialUrl: "https://license.kpc.or.kr", examFee: "과목별 공고 기준", passingStandard: "A·B·C 등급제"
+  },
+  {
+    id: "tat-accounting-level2", industryId: "business", name: "TAT 2급", issuer: "한국공인회계사회", level: "실무", type: "민간자격",
+    summary: "더존 등 회계 프로그램 기반 재무회계, 부가세, 원천세 실무 능력을 평가합니다.",
+    fitFor: ["회계 사무원", "세무 사무원", "경리 담당자"], requiredFor: ["회계 프로그램", "부가세 처리", "원천세 처리"],
+    averagePrepWeeks: 7, officialUrl: "https://at.kicpa.or.kr", examFee: "시험 공고 기준", passingStandard: "100점 만점 70점 이상"
+  },
+  {
+    id: "tat-accounting-level1", industryId: "business", name: "TAT 1급", issuer: "한국공인회계사회", level: "전문", type: "민간자격",
+    summary: "법인세, 결산, 세무조정과 회계 프로그램 고급 실무 역량을 검증합니다.",
+    fitFor: ["세무회계 담당자", "회계법인 지원자", "세무사무소 직원"], requiredFor: ["법인세 실무", "결산 처리", "세무조정"],
+    averagePrepWeeks: 10, officialUrl: "https://at.kicpa.or.kr", examFee: "시험 공고 기준", passingStandard: "100점 만점 70점 이상"
+  },
+  {
+    id: "ifrs-manager", industryId: "business", name: "IFRS관리사", issuer: "한국CFO협회", level: "전문", type: "민간자격",
+    summary: "국제회계기준 기반 재무제표 작성, 회계처리, 공시 이해도를 검증합니다.",
+    fitFor: ["회계 담당자", "재무팀 지원자", "회계법인 지원자"], requiredFor: ["IFRS 이해", "재무제표 작성", "회계 기준 적용"],
+    averagePrepWeeks: 8, officialUrl: "https://www.cfoi.kr", examFee: "시험 공고 기준", passingStandard: "시행기관 합격 기준 충족"
+  },
+  {
+    id: "tesat-level2", industryId: "finance", name: "TESAT", issuer: "한국경제신문", level: "실무", type: "민간자격",
+    summary: "경제이론, 시사경제, 상황판단 능력을 평가해 금융권과 공기업 경제상식 준비에 활용됩니다.",
+    fitFor: ["금융권 지원자", "공기업 지원자", "기획 직무 지원자"], requiredFor: ["경제상식", "시사 이해", "경제 의사결정"],
+    averagePrepWeeks: 6, officialUrl: "https://www.tesat.or.kr", examFee: "시험 공고 기준", passingStandard: "등급제"
+  },
+  {
+    id: "maekyung-test", industryId: "finance", name: "매경TEST", issuer: "매일경제신문", level: "실무", type: "민간자격",
+    summary: "경제·경영 이해력과 시사 기반 의사결정 능력을 평가하는 취업 경제경영 시험입니다.",
+    fitFor: ["금융권 지원자", "경영지원 지원자", "공기업 지원자"], requiredFor: ["경영 이해", "경제상식", "시사 판단"],
+    averagePrepWeeks: 6, officialUrl: "https://exam.mk.co.kr", examFee: "시험 공고 기준", passingStandard: "등급제"
+  },
+  {
+    id: "credit-manager", industryId: "finance", name: "신용관리사", issuer: "신용정보협회", level: "실무", type: "민간자격",
+    summary: "채권관리, 신용정보, 여신관리와 신용 리스크 기초 역량을 평가합니다.",
+    fitFor: ["금융 사무원", "채권관리 담당자", "여신 지원 담당자"], requiredFor: ["채권관리", "신용정보 이해", "여신 기초"],
+    averagePrepWeeks: 8, officialUrl: "https://www.cica.or.kr", examFee: "시험 공고 기준", passingStandard: "시행기관 합격 기준 충족"
+  },
+  {
+    id: "bank-teller", industryId: "finance", name: "은행텔러", issuer: "한국금융연수원", level: "입문", type: "민간자격",
+    summary: "은행 창구 업무, 금융상품 기초, 고객 응대와 금융 규정 이해도를 평가합니다.",
+    fitFor: ["은행권 지원자", "금융 창구 담당자", "고객 상담원"], requiredFor: ["창구 업무", "금융상품 기초", "고객 응대"],
+    averagePrepWeeks: 6, officialUrl: "https://www.kbi.or.kr", examFee: "시험 공고 기준", passingStandard: "과목별 기준 충족"
+  },
+  {
+    id: "linux-master-level2", industryId: "it", name: "리눅스마스터 2급", issuer: "한국정보통신진흥협회", level: "입문", type: "국가공인",
+    summary: "리눅스 운영체제 명령어, 파일 시스템, 네트워크와 서버 운영 기초를 평가합니다.",
+    fitFor: ["서버 운영 입문자", "인프라 지원자", "보안 입문자"], requiredFor: ["리눅스 명령어", "서버 운영", "네트워크 기초"],
+    averagePrepWeeks: 6, officialUrl: "https://www.ihd.or.kr", examFee: "급수별 상이", passingStandard: "시험 기준 충족"
+  },
+  {
+    id: "network-manager-level2", industryId: "it", name: "네트워크관리사 2급", issuer: "한국정보통신자격협회", level: "입문", type: "국가공인",
+    summary: "TCP/IP, 네트워크 장비, 서버 설정과 네트워크 장애 대응 기초 역량을 평가합니다.",
+    fitFor: ["네트워크 엔지니어 입문자", "전산 지원자", "인프라 운영자"], requiredFor: ["네트워크 기초", "장비 설정", "장애 대응"],
+    averagePrepWeeks: 6, officialUrl: "https://www.icqa.or.kr", examFee: "급수별 상이", passingStandard: "필기·실기 기준 충족"
+  },
+  {
+    id: "pc-maintenance-level2", industryId: "it", name: "PC정비사 2급", issuer: "한국정보통신자격협회", level: "입문", type: "민간자격",
+    summary: "PC 하드웨어, 운영체제, 주변기기, 장애 진단과 유지보수 능력을 평가합니다.",
+    fitFor: ["IT 헬프데스크", "전산 지원자", "PC 유지보수 담당자"], requiredFor: ["PC 정비", "장애 진단", "운영체제 설치"],
+    averagePrepWeeks: 5, officialUrl: "https://www.icqa.or.kr", examFee: "급수별 상이", passingStandard: "필기·실기 기준 충족"
+  },
+  {
+    id: "coding-specialist-level2", industryId: "it", name: "COS Pro 2급", issuer: "YBM", level: "입문", type: "민간자격",
+    summary: "프로그래밍 문법, 알고리즘 사고, 문제 해결 능력을 실기형으로 평가하는 코딩 자격입니다.",
+    fitFor: ["개발 직무 준비생", "비전공 개발 입문자", "SW 교육 이수자"], requiredFor: ["코딩 기초", "알고리즘 사고", "문제 해결"],
+    averagePrepWeeks: 8, officialUrl: "https://www.ybmit.com", examFee: "시험 공고 기준", passingStandard: "급수별 기준 충족"
+  },
+  {
+    id: "information-processing-industrial", industryId: "it", name: "정보처리산업기사", issuer: "한국산업인력공단", level: "실무", type: "국가자격",
+    summary: "소프트웨어 개발, 데이터베이스, 시스템 분석과 정보처리 실무 능력을 평가합니다.",
+    fitFor: ["개발 직무 지원자", "전산직 지원자", "SI 입문자"], requiredFor: ["소프트웨어 개발", "DB 활용", "시스템 분석"],
+    averagePrepWeeks: 10, officialUrl: "https://www.q-net.or.kr", examFee: "필기 19,400원 / 실기 공고 기준", passingStandard: "필기 평균 60점, 실기 60점 이상"
+  },
+  {
+    id: "cs-leaders", industryId: "business", name: "CS Leaders 관리사", issuer: "한국정보평가협회", level: "실무", type: "민간자격",
+    summary: "고객만족, 서비스 품질, 고객 응대와 조직 내 CS 운영 역량을 평가합니다.",
+    fitFor: ["고객지원 지원자", "서비스 운영자", "영업지원 담당자"], requiredFor: ["고객 응대", "서비스 품질", "CS 운영"],
+    averagePrepWeeks: 5, officialUrl: "https://www.kie.or.kr", examFee: "시험 공고 기준", passingStandard: "시행기관 합격 기준 충족"
+  },
+  {
+    id: "secretary-level2", industryId: "business", name: "비서 2급", issuer: "대한상공회의소", level: "실무", type: "국가공인",
+    summary: "일정 관리, 문서관리, 의전, 커뮤니케이션 등 비서·사무 지원 역량을 평가합니다.",
+    fitFor: ["비서직 지원자", "총무 지원자", "임원지원 담당자"], requiredFor: ["일정 관리", "문서 관리", "의전 실무"],
+    averagePrepWeeks: 6, officialUrl: "https://license.korcham.net", examFee: "시험 공고 기준", passingStandard: "과목별 기준 충족"
+  },
+  {
+    id: "consumer-specialist", industryId: "business", name: "소비자전문상담사 2급", issuer: "한국산업인력공단", level: "실무", type: "국가자격",
+    summary: "소비자 상담, 피해구제, 소비자 법규와 고객 커뮤니케이션 역량을 평가합니다.",
+    fitFor: ["고객센터 지원자", "소비자 상담원", "서비스 운영 담당자"], requiredFor: ["소비자 상담", "분쟁 대응", "고객 커뮤니케이션"],
+    averagePrepWeeks: 8, officialUrl: "https://www.q-net.or.kr", examFee: "필기·실기 공고 기준", passingStandard: "필기 평균 60점, 실기 60점 이상"
+  },
+  {
+    id: "social-research-analyst-level2", industryId: "business", name: "사회조사분석사 2급", issuer: "한국산업인력공단", level: "실무", type: "국가자격",
+    summary: "설문 설계, 통계 분석, 조사 보고서 작성 역량을 평가해 기획·마케팅 직무에서 활용됩니다.",
+    fitFor: ["마케팅 리서처", "기획 지원자", "공공조사 담당자"], requiredFor: ["설문 설계", "통계 분석", "보고서 작성"],
+    averagePrepWeeks: 9, officialUrl: "https://www.q-net.or.kr", examFee: "필기·실기 공고 기준", passingStandard: "필기 평균 60점, 실기 60점 이상"
+  },
+  {
+    id: "project-management-associate", industryId: "business", name: "프로젝트경영사 2급", issuer: "한국프로젝트경영협회", level: "실무", type: "민간자격",
+    summary: "프로젝트 일정, 범위, 원가, 리스크 관리와 협업 운영 기초 역량을 평가합니다.",
+    fitFor: ["PMO 지원자", "기획 직무 지원자", "운영관리 담당자"], requiredFor: ["일정 관리", "리스크 관리", "프로젝트 문서화"],
+    averagePrepWeeks: 6, officialUrl: "https://www.pmak.or.kr", examFee: "시험 공고 기준", passingStandard: "시행기관 합격 기준 충족"
+  },
+  {
+    id: "gtq-graphic-technology", industryId: "design", name: "GTQ 그래픽기술자격 2급", issuer: "한국생산성본부", level: "입문", type: "국가공인",
+    summary: "포토샵 기반 이미지 보정, 합성, 편집물 제작 능력을 평가하는 디자인 입문 자격입니다.",
+    fitFor: ["마케팅 디자인 지원자", "콘텐츠 제작자", "디자인 입문자"], requiredFor: ["이미지 편집", "그래픽 제작", "콘텐츠 디자인"],
+    averagePrepWeeks: 4, officialUrl: "https://license.kpc.or.kr", examFee: "등급별 상이", passingStandard: "100점 만점 60점 이상"
+  },
+  {
+    id: "colorist-industrial", industryId: "design", name: "컬러리스트산업기사", issuer: "한국산업인력공단", level: "실무", type: "국가자격",
+    summary: "색채 계획, 배색, 색채 심리와 제품·콘텐츠 색채 적용 능력을 평가합니다.",
+    fitFor: ["디자인 지원자", "브랜드 마케터", "제품기획 지원자"], requiredFor: ["색채 계획", "배색", "브랜드 색상 관리"],
+    averagePrepWeeks: 9, officialUrl: "https://www.q-net.or.kr", examFee: "필기·실기 공고 기준", passingStandard: "필기 평균 60점, 실기 60점 이상"
+  },
+  {
+    id: "acsm-cpt", industryId: "health", name: "ACSM Certified Personal Trainer", issuer: "ACSM", level: "실무", type: "국제자격",
+    summary: "운동처방, 체력 평가, 고객 운동지도 역량을 인증하는 피트니스 분야 국제 자격입니다.",
+    fitFor: ["퍼스널 트레이너", "헬스케어 서비스 지원자", "운동처방 입문자"], requiredFor: ["운동 지도", "체력 평가", "건강관리 상담"],
+    averagePrepWeeks: 10, officialUrl: "https://www.acsm.org/certification", examFee: "회원 여부별 상이", passingStandard: "ACSM 인증 기준 충족"
+  },
+  {
+    id: "first-aid-provider", industryId: "health", name: "응급처치 일반과정 수료", issuer: "대한적십자사", level: "입문", type: "민간자격",
+    summary: "심폐소생술, 자동심장충격기, 기본 응급처치 절차를 익히는 안전·서비스 직무 보완 인증입니다.",
+    fitFor: ["서비스 직무 지원자", "교육 보조", "현장 안전 담당자"], requiredFor: ["심폐소생술", "응급 상황 대응", "안전관리 기초"],
+    averagePrepWeeks: 1, officialUrl: "https://www.redcross.or.kr", examFee: "과정별 상이", passingStandard: "교육 과정 이수 기준 충족"
+  },
+  {
+    id: "sports-instructor-level2", industryId: "health", name: "생활스포츠지도사 2급", issuer: "국민체육진흥공단", level: "실무", type: "국가자격",
+    summary: "생활체육 지도, 운동 프로그램 운영, 안전관리 능력을 평가하는 체육 분야 국가자격입니다.",
+    fitFor: ["스포츠 강사", "체육시설 운영자", "헬스케어 서비스 지원자"], requiredFor: ["운동 지도", "프로그램 운영", "체육 안전"],
+    averagePrepWeeks: 10, officialUrl: "https://sqms.kspo.or.kr", examFee: "시험 공고 기준", passingStandard: "필기·실기·구술 기준 충족"
+  },
+  {
+    id: "caregiver-certificate", industryId: "health", name: "요양보호사", issuer: "한국보건의료인국가시험원", level: "입문", type: "국가자격",
+    summary: "노인 돌봄, 신체활동 지원, 일상생활 지원과 요양 서비스 기본 역량을 평가합니다.",
+    fitFor: ["요양기관 종사자", "돌봄 서비스 지원자", "복지 현장 입문자"], requiredFor: ["돌봄 서비스", "일상생활 지원", "노인 이해"],
+    averagePrepWeeks: 8, officialUrl: "https://www.kuksiwon.or.kr", examFee: "국시원 공고 기준", passingStandard: "국가시험 합격 기준 충족"
+  },
+  {
+    id: "fire-safety-manager-level2", industryId: "construction", name: "소방안전관리자 2급", issuer: "한국소방안전원", level: "입문", type: "국가자격",
+    summary: "건축물 소방안전관리, 피난, 소방시설 점검과 초기 대응 능력을 확인합니다.",
+    fitFor: ["시설관리 지원자", "안전관리 보조", "총무 담당자"], requiredFor: ["소방안전관리", "시설 점검", "피난 대응"],
+    averagePrepWeeks: 3, officialUrl: "https://www.kfsi.or.kr", examFee: "교육·시험 공고 기준", passingStandard: "교육 및 시험 기준 충족"
+  },
+  {
+    id: "hazardous-materials-functional", industryId: "construction", name: "위험물기능사", issuer: "한국산업인력공단", level: "입문", type: "국가자격",
+    summary: "위험물 성질, 취급, 저장, 안전관리 기초 역량을 평가하는 산업 현장 입문 자격입니다.",
+    fitFor: ["화학 제조 지원자", "안전관리 보조", "시설관리 담당자"], requiredFor: ["위험물 취급", "저장 관리", "안전 법규"],
+    averagePrepWeeks: 8, officialUrl: "https://www.q-net.or.kr", examFee: "필기·실기 공고 기준", passingStandard: "필기 60점, 실기 60점 이상"
+  },
+  {
+    id: "forklift-operator", industryId: "manufacturing", name: "지게차운전기능사", issuer: "한국산업인력공단", level: "입문", type: "국가자격",
+    summary: "물류·제조 현장에서 지게차 운전, 안전 점검, 하역 작업 역량을 평가합니다.",
+    fitFor: ["물류센터 지원자", "제조 현장 지원자", "창고관리 담당자"], requiredFor: ["지게차 운전", "하역 작업", "장비 안전점검"],
+    averagePrepWeeks: 4, officialUrl: "https://www.q-net.or.kr", examFee: "필기·실기 공고 기준", passingStandard: "필기 60점, 실기 60점 이상"
+  },
+  {
+    id: "welding-functional", industryId: "manufacturing", name: "용접기능사", issuer: "한국산업인력공단", level: "입문", type: "국가자격",
+    summary: "용접 재료, 장비, 도면 이해와 기본 용접 작업 능력을 평가하는 제조 현장 자격입니다.",
+    fitFor: ["제조 현장 지원자", "설비 제작 지원자", "정비 보조"], requiredFor: ["용접 작업", "도면 이해", "작업 안전"],
+    averagePrepWeeks: 8, officialUrl: "https://www.q-net.or.kr", examFee: "필기·실기 공고 기준", passingStandard: "필기 60점, 실기 60점 이상"
+  },
+  {
+    id: "computer-aided-mechanical-drawing", industryId: "manufacturing", name: "전산응용기계제도기능사", issuer: "한국산업인력공단", level: "입문", type: "국가자격",
+    summary: "CAD를 활용한 기계 도면 작성, 치수 기입, 투상도 이해 능력을 평가합니다.",
+    fitFor: ["CAD 설계 보조", "제조 설계 지원자", "기계 도면 담당자"], requiredFor: ["기계 도면", "CAD 활용", "제도 규격"],
+    averagePrepWeeks: 8, officialUrl: "https://www.q-net.or.kr", examFee: "필기·실기 공고 기준", passingStandard: "필기 60점, 실기 60점 이상"
+  },
+  {
+    id: "electronic-cad-functional", industryId: "manufacturing", name: "전자캐드기능사", issuer: "한국산업인력공단", level: "입문", type: "국가자격",
+    summary: "전자회로 도면 작성, PCB 설계 기초와 전자 CAD 활용 능력을 평가합니다.",
+    fitFor: ["전자 설계 보조", "제조 기술 지원자", "하드웨어 입문자"], requiredFor: ["전자회로 도면", "PCB 기초", "CAD 활용"],
+    averagePrepWeeks: 8, officialUrl: "https://www.q-net.or.kr", examFee: "필기·실기 공고 기준", passingStandard: "필기 60점, 실기 60점 이상"
+  },
+  {
+    id: "electric-functional", industryId: "energy", name: "전기기능사", issuer: "한국산업인력공단", level: "입문", type: "국가자격",
+    summary: "전기 설비 배선, 기초 회로, 전기 안전과 설비 시공 기초 역량을 평가합니다.",
+    fitFor: ["시설관리 지원자", "전기공사 보조", "제조 설비 지원자"], requiredFor: ["전기 배선", "전기 안전", "설비 시공 기초"],
+    averagePrepWeeks: 10, officialUrl: "https://www.q-net.or.kr", examFee: "필기·실기 공고 기준", passingStandard: "필기 60점, 실기 60점 이상"
+  },
+  {
+    id: "energy-management-functional", industryId: "energy", name: "에너지관리기능사", issuer: "한국산업인력공단", level: "입문", type: "국가자격",
+    summary: "보일러, 열설비, 에너지 설비 운전과 안전관리 기초 역량을 평가합니다.",
+    fitFor: ["시설관리 지원자", "설비 운영 보조", "에너지 현장 입문자"], requiredFor: ["열설비 운전", "보일러 관리", "에너지 안전"],
+    averagePrepWeeks: 8, officialUrl: "https://www.q-net.or.kr", examFee: "필기·실기 공고 기준", passingStandard: "필기 60점, 실기 60점 이상"
+  },
+  {
+    id: "craftsman-cook-western", industryId: "hospitality", name: "양식조리기능사", issuer: "한국산업인력공단", level: "입문", type: "국가자격",
+    summary: "양식 조리 재료 손질, 조리법, 위생관리와 메뉴 완성도를 평가합니다.",
+    fitFor: ["외식업 지원자", "호텔 조리 지원자", "급식 조리원"], requiredFor: ["양식 조리", "위생 관리", "메뉴 조리"],
+    averagePrepWeeks: 6, officialUrl: "https://www.q-net.or.kr", examFee: "필기·실기 공고 기준", passingStandard: "필기 60점, 실기 60점 이상"
+  },
+  {
+    id: "coffee-barista-level1", industryId: "hospitality", name: "바리스타 1급", issuer: "한국커피협회", level: "실무", type: "민간자격",
+    summary: "에스프레소 추출, 라떼아트, 커피 감별과 카페 운영 실무 능력을 평가합니다.",
+    fitFor: ["카페 매니저", "식음료 서비스 지원자", "외식 창업 준비자"], requiredFor: ["커피 추출", "라떼아트", "매장 서비스"],
+    averagePrepWeeks: 6, officialUrl: "https://www.kca-coffee.org", examFee: "필기·실기 공고 기준", passingStandard: "필기·실기 평가 기준 충족"
+  },
+  {
+    id: "domestic-travel-guide", industryId: "hospitality", name: "국내여행안내사", issuer: "한국산업인력공단", level: "입문", type: "국가자격",
+    summary: "국내 관광자원, 관광법규, 안내 실무와 고객 응대 역량을 평가합니다.",
+    fitFor: ["여행사 지원자", "관광 안내원", "지역관광 운영자"], requiredFor: ["관광 안내", "국내 관광자원", "고객 응대"],
+    averagePrepWeeks: 8, officialUrl: "https://www.q-net.or.kr", examFee: "큐넷 공고 기준", passingStandard: "필기 및 면접 기준 충족"
   }
 ];
 
