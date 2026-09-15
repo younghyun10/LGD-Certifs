@@ -409,6 +409,7 @@ main {
 .roadmap,
 .story,
 .portfolio,
+.mypage,
 .login-page,
 .jobs-page,
 .eligibility-page,
@@ -1183,6 +1184,13 @@ main {
   align-items: start;
 }
 
+.mypage-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+
 .auth-panel {
   display: grid;
   grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
@@ -1321,6 +1329,7 @@ main {
 .portfolio-job-panel,
 .eligibility-form,
 .eligibility-results,
+.mypage-card,
 .next-cert-panel {
   border: 1px solid #ded8cf;
   border-radius: 8px;
@@ -1330,8 +1339,134 @@ main {
 .portfolio-builder,
 .owned-panel,
 .eligibility-form,
-.eligibility-results {
+.eligibility-results,
+.mypage-card {
   padding: 18px;
+}
+
+.mypage-card--account {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(216, 248, 240, 0.58),
+      rgba(255, 253, 248, 0) 48%
+    ),
+    #ffffff;
+}
+
+.mypage-card .panel-heading svg {
+  width: 30px;
+  height: 30px;
+  color: #0e827a;
+}
+
+.mypage-account,
+.mypage-empty,
+.mypage-text-block {
+  display: grid;
+  gap: 8px;
+}
+
+.mypage-account > strong {
+  color: #111b1a;
+  font-size: 1.45rem;
+}
+
+.mypage-account span,
+.mypage-text-block span,
+.profile-summary span,
+.mypage-cert-list span,
+.mypage-summary-list span {
+  color: #0e827a;
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.mypage-account small,
+.mypage-cert-list small,
+.mypage-summary-list small,
+.mypage-empty p,
+.mypage-text-block p {
+  margin: 0;
+  color: #606966;
+  line-height: 1.6;
+}
+
+.profile-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.profile-summary div,
+.mypage-summary-list article,
+.mypage-cert-list article {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 8px;
+  background: #fffdf8;
+  border: 1px solid #ece7de;
+}
+
+.profile-summary strong,
+.mypage-cert-list strong,
+.mypage-summary-list strong {
+  color: #111b1a;
+}
+
+.mypage-text-block {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 8px;
+  background: #f1eee6;
+}
+
+.mypage-pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.mypage-pill-list span {
+  padding: 8px 10px;
+  border-radius: 999px;
+  color: #0b716b;
+  background: #e1f6ef;
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.mypage-cert-list,
+.mypage-summary-list {
+  display: grid;
+  gap: 10px;
+}
+
+.mypage-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.mypage-actions button,
+.mypage-empty button {
+  min-height: 40px;
+  border: 1px solid #45d7c1;
+  border-radius: 8px;
+  padding: 0 13px;
+  color: #06201d;
+  background: #45d7c1;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.mypage-actions button + button {
+  border-color: #ded8cf;
+  color: #39413f;
+  background: #ffffff;
 }
 
 .owned-search-results {
@@ -1708,6 +1843,7 @@ main {
   .roadmap-panel,
   .portfolio-layout,
   .eligibility-layout,
+  .mypage-grid,
   .auth-panel,
   .login-notice,
   .home-actions,
@@ -1789,6 +1925,7 @@ main {
   .roadmap,
   .schedule-page,
   .portfolio,
+  .mypage,
   .login-page,
   .jobs-page,
   .eligibility-page,

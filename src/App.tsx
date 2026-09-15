@@ -25,6 +25,7 @@ import {
   Sparkles,
   Star,
   Target,
+  UserRound,
   Zap,
   Scale,
   ScrollText,
@@ -45,6 +46,7 @@ type View =
   | "eligibility"
   | "roadmap"
   | "portfolio"
+  | "mypage"
   | "login";
 
 type AuthProvider = "local";
@@ -417,6 +419,7 @@ const viewLabels: Record<View, string> = {
   eligibility: "응시자격 매칭",
   roadmap: "로드맵 추천",
   portfolio: "보유 자격 분석",
+  mypage: "마이페이지",
   login: "로그인",
 };
 
@@ -429,6 +432,7 @@ function getInitialView(): View {
     hash === "eligibility" ||
     hash === "roadmap" ||
     hash === "portfolio" ||
+    hash === "mypage" ||
     hash === "login"
   )
     return hash;
@@ -1351,6 +1355,7 @@ export function App() {
               "eligibility",
               "roadmap",
               "portfolio",
+              "mypage",
             ] as View[]
           ).map((item) => (
             <button
@@ -1369,6 +1374,9 @@ export function App() {
               <span>{authUser.name}</span>
               <button type="button" onClick={handleLogout}>
                 로그아웃
+              </button>
+              <button type="button" onClick={() => navigate("mypage")}>
+                마이페이지
               </button>
             </>
           ) : (
@@ -1513,6 +1521,13 @@ export function App() {
                 추천합니다.
               </span>
             </button>
+            <button onClick={() => navigate("mypage")} type="button">
+              <UserRound aria-hidden="true" />
+              <strong>마이페이지</strong>
+              <span>
+                계정 정보, 지원자 자격 정보, 보유 자격증을 한눈에 확인합니다.
+              </span>
+            </button>
           </section>
 
           <section className="story" id="story">
@@ -1543,6 +1558,7 @@ export function App() {
             {view === "eligibility" && "응시자격 매칭"}
             {view === "roadmap" && "로드맵 추천"}
             {view === "portfolio" && "보유 자격 분석"}
+            {view === "mypage" && "마이페이지"}
             {view === "login" && "로그인"}
           </h1>
           <p>
@@ -1558,6 +1574,8 @@ export function App() {
               "목표 직무에 맞는 핵심 자격과 있으면 좋은 자격을 단계별로 추천합니다."}
             {view === "portfolio" &&
               "이미 보유한 자격증 조합으로 잘 맞는 산업군과 다음 취득 후보를 확인하세요."}
+            {view === "mypage" &&
+              "계정 정보, 응시자격 프로필, 보유 자격증과 추천 요약을 한눈에 확인하세요."}
             {view === "login" &&
               "자체 계정으로 로그인해 보유 자격 데이터를 저장하고 다시 불러오세요."}
           </p>
@@ -1667,6 +1685,184 @@ export function App() {
             )}
             {authMessage && <p className="auth-message">{authMessage}</p>}
           </section>
+        </section>
+      )}
+
+      {view === "mypage" && (
+        <section className="mypage">
+          <div className="mypage-grid">
+            <section className="mypage-card mypage-card--account">
+              <div className="panel-heading">
+                <div>
+                  <p className="eyebrow">Account</p>
+                  <h3>아이디 정보</h3>
+                </div>
+                <UserRound aria-hidden="true" />
+              </div>
+              {authUser ? (
+                <div className="mypage-account">
+                  <strong>{authUser.name}</strong>
+                  <span>{authUser.email}</span>
+                  <small>자체 로그인 계정</small>
+                  <div className="mypage-actions">
+                    <button type="button" onClick={() => navigate("login")}>
+                      로그인 페이지
+                    </button>
+                    <button type="button" onClick={handleLogout}>
+                      로그아웃
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="mypage-empty">
+                  <p>
+                    로그인하면 보유 자격증과 응시자격 프로필을 계정별로 저장해
+                    다시 불러올 수 있습니다.
+                  </p>
+                  <button type="button" onClick={() => navigate("login")}>
+                    로그인하러 가기
+                  </button>
+                </div>
+              )}
+            </section>
+
+            <section className="mypage-card">
+              <div className="panel-heading">
+                <div>
+                  <p className="eyebrow">Candidate Profile</p>
+                  <h3>지원자 자격 정보</h3>
+                </div>
+                <strong>{eligibilityJobRecommendations.length}건</strong>
+              </div>
+              <div className="profile-summary">
+                <div>
+                  <span>최종 학력</span>
+                  <strong>{educationLabels[candidateProfile.educationLevel]}</strong>
+                </div>
+                <div>
+                  <span>목표 경력</span>
+                  <strong>{careerLabels[candidateProfile.careerLevel]}</strong>
+                </div>
+                <div>
+                  <span>전공</span>
+                  <strong>{candidateProfile.major || "미입력"}</strong>
+                </div>
+                <div>
+                  <span>학교/학벌 정보</span>
+                  <strong>{candidateProfile.school || "미입력"}</strong>
+                </div>
+              </div>
+              <div className="mypage-text-block">
+                <span>이수과정/교육</span>
+                <p>{candidateProfile.completedCourses || "저장된 이수과정 정보가 없습니다."}</p>
+              </div>
+              <div className="mypage-pill-list">
+                {(candidateProfile.preferredIndustries.length > 0
+                  ? candidateProfile.preferredIndustries
+                  : []
+                ).map((industryId) => {
+                  const industry = industries.find((item) => item.id === industryId);
+                  return industry ? <span key={industry.id}>{industry.name}</span> : null;
+                })}
+                {candidateProfile.preferredIndustries.length === 0 && (
+                  <span>관심 산업 미선택</span>
+                )}
+              </div>
+              <div className="mypage-actions">
+                <button type="button" onClick={() => navigate("eligibility")}>
+                  응시자격 정보 수정
+                </button>
+              </div>
+            </section>
+
+            <section className="mypage-card">
+              <div className="panel-heading">
+                <div>
+                  <p className="eyebrow">My Credentials</p>
+                  <h3>보유 자격증</h3>
+                </div>
+                <strong>{ownedCertifications.length}개</strong>
+              </div>
+              {ownedCertifications.length > 0 ? (
+                <div className="mypage-cert-list">
+                  {ownedCertifications.map((certification) => {
+                    const industry = industries.find(
+                      (item) => item.id === certification.industryId,
+                    );
+                    return (
+                      <article key={certification.id}>
+                        <span>{industry?.name}</span>
+                        <strong>{certification.name}</strong>
+                        <small>
+                          {certification.level} · {certification.type}
+                        </small>
+                      </article>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="mypage-empty">
+                  <p>아직 등록된 보유 자격증이 없습니다.</p>
+                  <button type="button" onClick={() => navigate("portfolio")}>
+                    보유 자격증 등록
+                  </button>
+                </div>
+              )}
+            </section>
+
+            <section className="mypage-card">
+              <div className="panel-heading">
+                <div>
+                  <p className="eyebrow">Recommendation Snapshot</p>
+                  <h3>추천 요약</h3>
+                </div>
+              </div>
+              <div className="mypage-summary-list">
+                <article>
+                  <span>잘 맞는 산업군</span>
+                  <strong>
+                    {portfolioIndustryMatches[0]?.industry.name ?? "분석 대기"}
+                  </strong>
+                  <small>
+                    {portfolioIndustryMatches[0]
+                      ? `${portfolioIndustryMatches[0].score}점`
+                      : "보유 자격증을 등록하면 분석됩니다."}
+                  </small>
+                </article>
+                <article>
+                  <span>다음 추천 자격증</span>
+                  <strong>
+                    {portfolioRecommendations[0]?.certification.name ??
+                      "추천 대기"}
+                  </strong>
+                  <small>
+                    {portfolioRecommendations[0]
+                      ? `${portfolioRecommendations[0].score}점`
+                      : "보유 자격증 기반으로 추천됩니다."}
+                  </small>
+                </article>
+                <article>
+                  <span>지원 가능성 높은 공고</span>
+                  <strong>
+                    {eligibilityJobRecommendations[0]?.job.organization ??
+                      "추천 대기"}
+                  </strong>
+                  <small>
+                    {eligibilityJobRecommendations[0]?.job.title ??
+                      "응시자격 정보를 저장하면 추천됩니다."}
+                  </small>
+                </article>
+              </div>
+              <div className="mypage-actions">
+                <button type="button" onClick={() => navigate("portfolio")}>
+                  보유 자격 분석 보기
+                </button>
+                <button type="button" onClick={() => navigate("eligibility")}>
+                  채용 공고 매칭 보기
+                </button>
+              </div>
+            </section>
+          </div>
         </section>
       )}
 
