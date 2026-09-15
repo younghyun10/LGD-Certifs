@@ -214,8 +214,8 @@ main {
 .hero h1 {
   margin: 0;
   max-width: 760px;
-  font-size: clamp(2.6rem, 6vw, 5.8rem);
-  line-height: 1.02;
+  font-size: clamp(2.35rem, 5.4vw, 5.25rem);
+  line-height: 1.8;
   letter-spacing: 0;
 }
 
@@ -381,6 +381,7 @@ main {
 .roadmap,
 .story,
 .portfolio,
+.login-page,
 .schedule-page {
   width: min(1180px, calc(100% - 40px));
   margin: 36px auto 96px;
@@ -1015,6 +1016,11 @@ main {
     #ffffff;
 }
 
+.auth-panel--standalone {
+  max-width: 920px;
+  margin: 0 auto;
+}
+
 .auth-panel h3 {
   margin: 0 0 10px;
   color: #111b1a;
@@ -1034,7 +1040,6 @@ main {
 }
 
 .auth-tabs,
-.social-login-row,
 .auth-status {
   display: flex;
   gap: 8px;
@@ -1043,7 +1048,6 @@ main {
 
 .auth-tabs button,
 .auth-fields button,
-.social-login-row button,
 .auth-status button {
   min-height: 42px;
   border: 1px solid #ded8cf;
@@ -1088,6 +1092,42 @@ main {
   color: #0b716b;
   background: #e1f6ef;
   font-weight: 800;
+}
+
+.login-notice {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 18px;
+  padding: 20px;
+  border: 1px solid #ded8cf;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.login-notice h3 {
+  margin: 0 0 8px;
+  color: #111b1a;
+  font-size: 1.25rem;
+}
+
+.login-notice p:not(.eyebrow) {
+  margin: 0;
+  color: #606966;
+  line-height: 1.7;
+}
+
+.login-notice button {
+  min-height: 42px;
+  border: 1px solid #45d7c1;
+  border-radius: 8px;
+  padding: 0 14px;
+  color: #06201d;
+  background: #45d7c1;
+  font-weight: 900;
+  white-space: nowrap;
+  cursor: pointer;
 }
 
 .portfolio-builder,
@@ -1306,6 +1346,7 @@ main {
   .roadmap-panel,
   .portfolio-layout,
   .auth-panel,
+  .login-notice,
   .home-actions,
   .story,
   .detail-columns {
@@ -1370,7 +1411,7 @@ main {
   }
 
   .hero h1 {
-    font-size: 2.7rem;
+    font-size: 2.35rem;
   }
 
   .quick-stats,
@@ -1378,6 +1419,7 @@ main {
   .roadmap,
   .schedule-page,
   .portfolio,
+  .login-page,
   .home-actions,
   .story {
     width: min(100% - 28px, 1180px);

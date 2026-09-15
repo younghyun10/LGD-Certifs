@@ -30,9 +30,9 @@ import {
 } from "lucide-react";
 import type { CatalogResponse, Certification, Industry, IndustryId } from "./types";
 
-type View = "home" | "explore" | "schedule" | "roadmap" | "portfolio";
+type View = "home" | "explore" | "schedule" | "roadmap" | "portfolio" | "login";
 
-type AuthProvider = "local" | "google" | "kakao";
+type AuthProvider = "local";
 
 type AuthUser = {
   id: string;
@@ -277,12 +277,13 @@ const viewLabels: Record<View, string> = {
   explore: "자격증 찾기",
   schedule: "일정 보기",
   roadmap: "로드맵 추천",
-  portfolio: "보유 자격 분석"
+  portfolio: "보유 자격 분석",
+  login: "로그인"
 };
 
 function getInitialView(): View {
   const hash = window.location.hash.replace("#", "");
-  if (hash === "explore" || hash === "schedule" || hash === "roadmap" || hash === "portfolio") return hash;
+  if (hash === "explore" || hash === "schedule" || hash === "roadmap" || hash === "portfolio" || hash === "login") return hash;
   return "home";
 }
 
@@ -611,14 +612,6 @@ export function App() {
     setAuthMessage("로그아웃되었습니다.");
   }
 
-  function handleSocialLogin(provider: "google" | "kakao") {
-    setAuthMessage(
-      provider === "google"
-        ? "Google 로그인은 무료 구간이 있지만, Google OAuth 클라이언트 ID 설정 후 활성화할 수 있습니다."
-        : "카카오 로그인은 무료 API로 사용할 수 있지만, 카카오 REST API 키와 리다이렉트 URI 설정 후 활성화할 수 있습니다."
-    );
-  }
-
   useEffect(() => {
     requestCatalog()
       .then((data: CatalogResponse) => {
@@ -849,7 +842,7 @@ export function App() {
               <button type="button" onClick={handleLogout}>로그아웃</button>
             </>
           ) : (
-            <button type="button" onClick={() => navigate("portfolio")}>로그인</button>
+            <button type="button" onClick={() => navigate("login")}>로그인</button>
           )}
         </div>
       </nav>
@@ -953,15 +946,17 @@ export function App() {
             {view === "schedule" && "시험 일정 보기"}
             {view === "roadmap" && "로드맵 추천"}
             {view === "portfolio" && "보유 자격 분석"}
+            {view === "login" && "로그인"}
           </h1>
           <p>
             {view === "explore" && "분야와 키워드로 필요한 자격증을 빠르게 좁혀보세요."}
             {view === "schedule" && "접수 기간, 시험일, 발표일을 자격증별로 한눈에 확인하세요."}
             {view === "roadmap" && "목표 직무에 맞는 핵심 자격과 있으면 좋은 자격을 단계별로 추천합니다."}
             {view === "portfolio" && "이미 보유한 자격증 조합으로 잘 맞는 산업군과 다음 취득 후보를 확인하세요."}
+            {view === "login" && "자체 계정으로 로그인해 보유 자격 데이터를 저장하고 다시 불러오세요."}
           </p>
           <div className="page-switcher" aria-label="기능 페이지 이동">
-            {(["explore", "schedule", "roadmap", "portfolio"] as View[]).map((item) => (
+            {(["explore", "schedule", "roadmap", "portfolio", "login"] as View[]).map((item) => (
               <button
                 className={view === item ? "is-active" : ""}
                 key={item}
@@ -973,6 +968,74 @@ export function App() {
             ))}
           </div>
         </header>
+      )}
+
+      {view === "login" && (
+        <section className="login-page">
+          <section className="auth-panel auth-panel--standalone" aria-label="로그인">
+            <div>
+              <p className="eyebrow">Account</p>
+              <h3>{authUser ? `${authUser.name}님, 로그인되어 있습니다` : "로그인하고 보유 자격 데이터를 저장하세요"}</h3>
+              <p>
+                {authUser
+                  ? "보유 자격 분석 페이지에서 등록한 자격증은 다음 접속 때 다시 불러올 수 있습니다."
+                  : "현재는 자체 로그인으로 계정을 만들고, 사용자별 보유 자격증 목록을 저장합니다."}
+              </p>
+            </div>
+
+            {authUser ? (
+              <div className="auth-status">
+                <span>{authUser.email}</span>
+                <button type="button" onClick={handleLogout}>로그아웃</button>
+                <button type="button" onClick={() => navigate("portfolio")}>보유 자격 분석으로 이동</button>
+              </div>
+            ) : (
+              <div className="auth-form">
+                <div className="auth-tabs">
+                  <button
+                    className={authMode === "login" ? "is-active" : ""}
+                    type="button"
+                    onClick={() => setAuthMode("login")}
+                  >
+                    로그인
+                  </button>
+                  <button
+                    className={authMode === "signup" ? "is-active" : ""}
+                    type="button"
+                    onClick={() => setAuthMode("signup")}
+                  >
+                    회원가입
+                  </button>
+                </div>
+                <div className="auth-fields">
+                  {authMode === "signup" && (
+                    <input
+                      value={authForm.name}
+                      onChange={(event) => setAuthForm((current) => ({ ...current, name: event.target.value }))}
+                      placeholder="이름"
+                    />
+                  )}
+                  <input
+                    value={authForm.email}
+                    onChange={(event) => setAuthForm((current) => ({ ...current, email: event.target.value }))}
+                    placeholder="이메일"
+                    type="email"
+                  />
+                  <input
+                    value={authForm.password}
+                    onChange={(event) => setAuthForm((current) => ({ ...current, password: event.target.value }))}
+                    placeholder="비밀번호"
+                    type="password"
+                  />
+                  <button type="button" onClick={handleAuthSubmit}>
+                    {authMode === "login" ? "로그인" : "회원가입"}
+                  </button>
+                </div>
+              </div>
+            )}
+            {authMessage && <p className="auth-message">{authMessage}</p>}
+          </section>
+        </section>
       )}
 
       {view === "roadmap" && (
@@ -1188,72 +1251,16 @@ export function App() {
             </p>
           </div>
 
-          <section className="auth-panel" aria-label="로그인">
-            <div>
-              <p className="eyebrow">Account</p>
-              <h3>{authUser ? `${authUser.name}님의 보유 자격 데이터` : "로그인하고 보유 자격 데이터를 저장하세요"}</h3>
-              <p>
-                {authUser
-                  ? "등록한 자격증은 이 브라우저의 계정 데이터에 저장되어 다음 접속 때 다시 불러옵니다."
-                  : "카카오·구글 로그인은 앱 키 설정 후 연결할 수 있고, 현재는 자체 로그인으로 저장 기능을 사용할 수 있습니다."}
-              </p>
-            </div>
-
-            {authUser ? (
-              <div className="auth-status">
-                <span>{authUser.email}</span>
-                <button type="button" onClick={handleLogout}>로그아웃</button>
+          {!authUser && (
+            <section className="login-notice" aria-label="로그인 안내">
+              <div>
+                <p className="eyebrow">Login Required</p>
+                <h3>로그인하면 보유 자격 데이터를 저장할 수 있습니다.</h3>
+                <p>계정을 만든 뒤 자격증을 등록하면 다음 접속 때도 같은 목록을 다시 불러옵니다.</p>
               </div>
-            ) : (
-              <div className="auth-form">
-                <div className="auth-tabs">
-                  <button
-                    className={authMode === "login" ? "is-active" : ""}
-                    type="button"
-                    onClick={() => setAuthMode("login")}
-                  >
-                    로그인
-                  </button>
-                  <button
-                    className={authMode === "signup" ? "is-active" : ""}
-                    type="button"
-                    onClick={() => setAuthMode("signup")}
-                  >
-                    회원가입
-                  </button>
-                </div>
-                <div className="auth-fields">
-                  {authMode === "signup" && (
-                    <input
-                      value={authForm.name}
-                      onChange={(event) => setAuthForm((current) => ({ ...current, name: event.target.value }))}
-                      placeholder="이름"
-                    />
-                  )}
-                  <input
-                    value={authForm.email}
-                    onChange={(event) => setAuthForm((current) => ({ ...current, email: event.target.value }))}
-                    placeholder="이메일"
-                    type="email"
-                  />
-                  <input
-                    value={authForm.password}
-                    onChange={(event) => setAuthForm((current) => ({ ...current, password: event.target.value }))}
-                    placeholder="비밀번호"
-                    type="password"
-                  />
-                  <button type="button" onClick={handleAuthSubmit}>
-                    {authMode === "login" ? "로그인" : "회원가입"}
-                  </button>
-                </div>
-                <div className="social-login-row">
-                  <button type="button" onClick={() => handleSocialLogin("kakao")}>카카오 로그인 준비</button>
-                  <button type="button" onClick={() => handleSocialLogin("google")}>Google 로그인 준비</button>
-                </div>
-              </div>
-            )}
-            {authMessage && <p className="auth-message">{authMessage}</p>}
-          </section>
+              <button type="button" onClick={() => navigate("login")}>로그인 페이지로 이동</button>
+            </section>
+          )}
 
           <div className="portfolio-layout">
             <section className="portfolio-builder" aria-label="보유 자격증 등록">
