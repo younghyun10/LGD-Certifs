@@ -1062,18 +1062,18 @@ export function App() {
           <span>CertiMap</span>
         </button>
         <div className="nav__links">
-          {(["explore", "schedule", "jobs", "roadmap", "portfolio"] as View[]).map(
-            (item) => (
-              <button
-                className={view === item ? "is-active" : ""}
-                key={item}
-                onClick={() => navigate(item)}
-                type="button"
-              >
-                {viewLabels[item]}
-              </button>
-            ),
-          )}
+          {(
+            ["explore", "schedule", "jobs", "roadmap", "portfolio"] as View[]
+          ).map((item) => (
+            <button
+              className={view === item ? "is-active" : ""}
+              key={item}
+              onClick={() => navigate(item)}
+              type="button"
+            >
+              {viewLabels[item]}
+            </button>
+          ))}
         </div>
         <div className="nav__auth">
           {authUser ? (
@@ -1105,7 +1105,7 @@ export function App() {
                 <Sparkles size={16} aria-hidden="true" />
                 산업별 자격증 탐색 플랫폼
               </p>
-              <h1>궁금한 직무에 필요한 자격증을 한 번에 찾으세요.</h1>
+              <h1>궁금한 직무에 필요한 자격증을 \n한 번에 찾으세요.</h1>
               <p>
                 CertiMap은 산업 분야, 직무 키워드, 시험 일정을 연결해 다음
                 커리어 선택에 필요한 자격증 정보를 빠르게 보여주는 가상의 정보
@@ -1378,7 +1378,9 @@ export function App() {
           <div className="jobs-summary">
             <div>
               <span>데이터 출처</span>
-              <strong>{jobsResponse?.source ?? "ALIO 공공기관 채용정보"}</strong>
+              <strong>
+                {jobsResponse?.source ?? "ALIO 공공기관 채용정보"}
+              </strong>
             </div>
             <div>
               <span>수집 공고</span>
@@ -1460,7 +1462,8 @@ export function App() {
               ))
             ) : (
               <p className="empty-copy">
-                조건에 맞는 공고가 없습니다. 검색어 또는 NCS 필터를 조정해보세요.
+                조건에 맞는 공고가 없습니다. 검색어 또는 NCS 필터를
+                조정해보세요.
               </p>
             )}
           </div>
