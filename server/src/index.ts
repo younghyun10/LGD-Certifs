@@ -2,6 +2,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import { listCertifications, listIndustries } from "./db.js";
+import { listPublicJobs } from "./jobs.js";
 
 dotenv.config();
 
@@ -23,6 +24,18 @@ app.get("/api/catalog", async (_request, response, next) => {
     ]);
 
     response.json({ industries, certifications });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get("/api/jobs", async (_request, response, next) => {
+  try {
+    response.json({
+      source: "ALIO 공공기관 채용정보",
+      updatedAt: new Date().toISOString(),
+      jobs: await listPublicJobs()
+    });
   } catch (error) {
     next(error);
   }

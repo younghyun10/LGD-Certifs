@@ -18,6 +18,7 @@ import {
   Landmark,
   Leaf,
   Map,
+  Newspaper,
   Palette,
   Search,
   ShieldCheck,
@@ -33,9 +34,17 @@ import type {
   Certification,
   Industry,
   IndustryId,
+  PublicJobsResponse,
 } from "./types";
 
-type View = "home" | "explore" | "schedule" | "roadmap" | "portfolio" | "login";
+type View =
+  | "home"
+  | "explore"
+  | "schedule"
+  | "jobs"
+  | "roadmap"
+  | "portfolio"
+  | "login";
 
 type AuthProvider = "local";
 
@@ -367,6 +376,7 @@ const viewLabels: Record<View, string> = {
   home: "홈",
   explore: "자격증 찾기",
   schedule: "일정 보기",
+  jobs: "채용 공고",
   roadmap: "로드맵 추천",
   portfolio: "보유 자격 분석",
   login: "로그인",
@@ -377,6 +387,7 @@ function getInitialView(): View {
   if (
     hash === "explore" ||
     hash === "schedule" ||
+    hash === "jobs" ||
     hash === "roadmap" ||
     hash === "portfolio" ||
     hash === "login"
@@ -419,6 +430,26 @@ function requestCatalog(): Promise<CatalogResponse> {
       }
     };
     request.onerror = () => reject(new Error("Catalog request failed"));
+    request.send();
+  });
+}
+
+function requestPublicJobs(): Promise<PublicJobsResponse> {
+  if ("fetch" in window) {
+    return window.fetch("/api/jobs").then((response) => response.json());
+  }
+
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open("GET", "/api/jobs");
+    request.onload = () => {
+      if (request.status >= 200 && request.status < 300) {
+        resolve(JSON.parse(request.responseText) as PublicJobsResponse);
+      } else {
+        reject(new Error(`Jobs request failed with ${request.status}`));
+      }
+    };
+    request.onerror = () => reject(new Error("Jobs request failed"));
     request.send();
   });
 }
@@ -638,6 +669,11 @@ export function App() {
   const [selectedRoadmapId, setSelectedRoadmapId] = useState<string>("");
   const [selectedGoalId, setSelectedGoalId] = useState(roadmapGoals[0].id);
   const [ownedQuery, setOwnedQuery] = useState("");
+  const [jobsResponse, setJobsResponse] = useState<PublicJobsResponse | null>(
+    null,
+  );
+  const [jobQuery, setJobQuery] = useState("");
+  const [selectedJobNcs, setSelectedJobNcs] = useState("all");
   const [ownedCertificationIds, setOwnedCertificationIds] = useState<string[]>(
     [],
   );
@@ -751,6 +787,18 @@ export function App() {
   }, []);
 
   useEffect(() => {
+    requestPublicJobs()
+      .then((data) => setJobsResponse(data))
+      .catch(() => {
+        setJobsResponse({
+          source: "ALIO 공공기관 채용정보",
+          updatedAt: new Date().toISOString(),
+          jobs: [],
+        });
+      });
+  }, []);
+
+  useEffect(() => {
     const syncHash = () => setView(getInitialView());
     window.addEventListener("hashchange", syncHash);
     return () => window.removeEventListener("hashchange", syncHash);
@@ -777,9 +825,36 @@ export function App() {
 
   const industries = catalog?.industries ?? [];
   const certifications = catalog?.certifications ?? [];
+  const publicJobs = jobsResponse?.jobs ?? [];
   const ownedCertifications = certifications.filter((certification) =>
     ownedCertificationIds.includes(certification.id),
   );
+
+  const jobNcsOptions = useMemo(() => {
+    return Array.from(new Set(publicJobs.flatMap((job) => job.ncs))).sort();
+  }, [publicJobs]);
+
+  const filteredJobs = useMemo(() => {
+    const normalizedQuery = jobQuery.trim().toLowerCase();
+    return publicJobs.filter((job) => {
+      const matchesNcs =
+        selectedJobNcs === "all" || job.ncs.includes(selectedJobNcs);
+      const matchesQuery =
+        !normalizedQuery ||
+        [
+          job.title,
+          job.organization,
+          job.location,
+          job.employmentType,
+          job.careerType,
+          ...job.ncs,
+        ]
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedQuery);
+      return matchesNcs && matchesQuery;
+    });
+  }, [jobQuery, publicJobs, selectedJobNcs]);
 
   const filtered = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -987,7 +1062,7 @@ export function App() {
           <span>CertiMap</span>
         </button>
         <div className="nav__links">
-          {(["explore", "schedule", "roadmap", "portfolio"] as View[]).map(
+          {(["explore", "schedule", "jobs", "roadmap", "portfolio"] as View[]).map(
             (item) => (
               <button
                 className={view === item ? "is-active" : ""}
@@ -1055,6 +1130,14 @@ export function App() {
                 </button>
                 <button
                   className="button button--ghost"
+                  onClick={() => navigate("jobs")}
+                  type="button"
+                >
+                  <Newspaper size={18} aria-hidden="true" />
+                  채용 공고
+                </button>
+                <button
+                  className="button button--ghost"
                   onClick={() => navigate("roadmap")}
                   type="button"
                 >
@@ -1103,6 +1186,13 @@ export function App() {
                 시험일, 접수 기간, 합격 발표일을 한 화면에서 비교합니다.
               </span>
             </button>
+            <button onClick={() => navigate("jobs")} type="button">
+              <Newspaper aria-hidden="true" />
+              <strong>채용 공고</strong>
+              <span>
+                공기업 채용 공고를 확인하고 요구 직무와 NCS 분류를 비교합니다.
+              </span>
+            </button>
             <button onClick={() => navigate("roadmap")} type="button">
               <Map aria-hidden="true" />
               <strong>로드맵 추천</strong>
@@ -1143,6 +1233,7 @@ export function App() {
           <h1>
             {view === "explore" && "자격증 찾기"}
             {view === "schedule" && "시험 일정 보기"}
+            {view === "jobs" && "공기업 채용 공고"}
             {view === "roadmap" && "로드맵 추천"}
             {view === "portfolio" && "보유 자격 분석"}
             {view === "login" && "로그인"}
@@ -1152,6 +1243,8 @@ export function App() {
               "분야와 키워드로 필요한 자격증을 빠르게 좁혀보세요."}
             {view === "schedule" &&
               "접수 기간, 시험일, 발표일을 자격증별로 한눈에 확인하세요."}
+            {view === "jobs" &&
+              "ALIO 공개 채용 정보를 바탕으로 진행 중인 공공기관 채용 공고를 확인하세요."}
             {view === "roadmap" &&
               "목표 직무에 맞는 핵심 자격과 있으면 좋은 자격을 단계별로 추천합니다."}
             {view === "portfolio" &&
@@ -1265,6 +1358,112 @@ export function App() {
             )}
             {authMessage && <p className="auth-message">{authMessage}</p>}
           </section>
+        </section>
+      )}
+
+      {view === "jobs" && (
+        <section className="jobs-page">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Public Sector Jobs</p>
+              <h2>공기업 채용 공고 조회</h2>
+            </div>
+            <p className="section-copy">
+              공공기관 채용 공고를 먼저 모아보고, 이후 추천 점수에 채용공고
+              빈도와 산업별 요구 조건을 반영할 수 있도록 기반 데이터를
+              정리합니다.
+            </p>
+          </div>
+
+          <div className="jobs-summary">
+            <div>
+              <span>데이터 출처</span>
+              <strong>{jobsResponse?.source ?? "ALIO 공공기관 채용정보"}</strong>
+            </div>
+            <div>
+              <span>수집 공고</span>
+              <strong>{publicJobs.length}건</strong>
+            </div>
+            <div>
+              <span>마지막 갱신</span>
+              <strong>
+                {jobsResponse
+                  ? new Date(jobsResponse.updatedAt).toLocaleString("ko-KR")
+                  : "불러오는 중"}
+              </strong>
+            </div>
+          </div>
+
+          <div className="jobs-page__tools">
+            <label className="search-box">
+              <Search size={18} aria-hidden="true" />
+              <input
+                value={jobQuery}
+                onChange={(event) => setJobQuery(event.target.value)}
+                placeholder="기관명, 직무, 지역, NCS 검색"
+              />
+            </label>
+            <div className="filters" aria-label="NCS 분류 필터">
+              <button
+                className={selectedJobNcs === "all" ? "is-active" : ""}
+                onClick={() => setSelectedJobNcs("all")}
+                type="button"
+              >
+                전체
+              </button>
+              {jobNcsOptions.map((ncs) => (
+                <button
+                  className={selectedJobNcs === ncs ? "is-active" : ""}
+                  key={ncs}
+                  onClick={() => setSelectedJobNcs(ncs)}
+                  type="button"
+                >
+                  {ncs}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="job-list" aria-label="공기업 채용 공고 목록">
+            {filteredJobs.length > 0 ? (
+              filteredJobs.map((job) => (
+                <article className="job-card" key={job.id}>
+                  <div className="job-card__top">
+                    <div>
+                      <span>{job.organization}</span>
+                      <h3>{job.title}</h3>
+                    </div>
+                    <strong>{job.status}</strong>
+                  </div>
+                  <div className="job-card__tags">
+                    {job.ncs.map((ncs) => (
+                      <span key={`${job.id}-${ncs}`}>{ncs}</span>
+                    ))}
+                  </div>
+                  <div className="job-card__meta">
+                    <span>근무지 {job.location}</span>
+                    <span>{job.employmentType}</span>
+                    <span>{job.careerType}</span>
+                    <span>모집 {job.headcount}</span>
+                  </div>
+                  <div className="job-card__period">
+                    <CalendarDays size={17} aria-hidden="true" />
+                    <span>
+                      접수 {job.startDate} - {job.endDate}
+                    </span>
+                  </div>
+                  <a href={job.sourceUrl} target="_blank" rel="noreferrer">
+                    공고 원문 보기
+                    <ArrowUpRight size={15} aria-hidden="true" />
+                  </a>
+                </article>
+              ))
+            ) : (
+              <p className="empty-copy">
+                조건에 맞는 공고가 없습니다. 검색어 또는 NCS 필터를 조정해보세요.
+              </p>
+            )}
+          </div>
         </section>
       )}
 

@@ -53,3 +53,24 @@ export interface CatalogResponse {
   industries: Industry[];
   certifications: Certification[];
 }
+
+export interface PublicJobPosting {
+  id: string;
+  title: string;
+  organization: string;
+  ncs: string[];
+  location: string;
+  employmentType: string;
+  careerType: string;
+  headcount: string;
+  startDate: string;
+  endDate: string;
+  status: "진행중" | "마감";
+  sourceUrl: string;
+}
+
+export interface PublicJobsResponse {
+  source: string;
+  updatedAt: string;
+  jobs: PublicJobPosting[];
+}
