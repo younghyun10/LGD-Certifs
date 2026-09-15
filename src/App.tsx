@@ -1124,8 +1124,7 @@ export function App() {
           ...industryMatches
             .map(
               (industryId) =>
-                industries.find((industry) => industry.id === industryId)
-                  ?.name,
+                industries.find((industry) => industry.id === industryId)?.name,
             )
             .filter(Boolean)
             .map((name) => `${name} 산업 연결`),
@@ -1144,12 +1143,7 @@ export function App() {
       .filter((item) => item.score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, 4);
-  }, [
-    industries,
-    ownedCertifications,
-    portfolioIndustryMatches,
-    publicJobs,
-  ]);
+  }, [industries, ownedCertifications, portfolioIndustryMatches, publicJobs]);
 
   function addOwnedCertification(certificationId: string) {
     if (!authUser) {
@@ -1237,7 +1231,7 @@ export function App() {
                 커리어 선택에 필요한 자격증 정보를 빠르게 보여주는 가상의 정보
                 조회 서비스입니다.
               </p>
-              <div className="hero__actions">
+              {/* <div className="hero__actions">
                 <button
                   className="button button--primary"
                   onClick={() => navigate("explore")}
@@ -1278,7 +1272,7 @@ export function App() {
                   <Layers3 size={18} aria-hidden="true" />
                   보유 자격 분석
                 </button>
-              </div>
+              </div> */}
             </div>
           </section>
 
@@ -1976,42 +1970,50 @@ export function App() {
                 </div>
                 {portfolioJobRecommendations.length > 0 ? (
                   <div className="portfolio-job-list">
-                    {portfolioJobRecommendations.map(({ job, score, reasons }) => (
-                      <article className="portfolio-job-card" key={job.id}>
-                        <div className="portfolio-job-card__top">
-                          <div>
-                            <span>{job.organization}</span>
-                            <h4>{job.title}</h4>
+                    {portfolioJobRecommendations.map(
+                      ({ job, score, reasons }) => (
+                        <article className="portfolio-job-card" key={job.id}>
+                          <div className="portfolio-job-card__top">
+                            <div>
+                              <span>{job.organization}</span>
+                              <h4>{job.title}</h4>
+                            </div>
+                            <strong>{score}점</strong>
                           </div>
-                          <strong>{score}점</strong>
-                        </div>
-                        <div className="job-card__tags">
-                          {job.ncs.map((ncs) => (
-                            <span key={`${job.id}-portfolio-${ncs}`}>{ncs}</span>
-                          ))}
-                        </div>
-                        <div className="portfolio-job-card__reasons">
-                          {reasons.map((reason) => (
-                            <span key={`${job.id}-${reason}`}>{reason}</span>
-                          ))}
-                        </div>
-                        <div className="job-card__meta">
-                          <span>근무지 {job.location}</span>
-                          <span>{job.employmentType}</span>
-                          <span>{job.careerType}</span>
-                          <span>모집 {job.headcount}</span>
-                        </div>
-                        <div className="portfolio-job-card__actions">
-                          <span>
-                            접수 {job.startDate} - {job.endDate}
-                          </span>
-                          <a href={job.sourceUrl} target="_blank" rel="noreferrer">
-                            공고 보기
-                            <ArrowUpRight size={15} aria-hidden="true" />
-                          </a>
-                        </div>
-                      </article>
-                    ))}
+                          <div className="job-card__tags">
+                            {job.ncs.map((ncs) => (
+                              <span key={`${job.id}-portfolio-${ncs}`}>
+                                {ncs}
+                              </span>
+                            ))}
+                          </div>
+                          <div className="portfolio-job-card__reasons">
+                            {reasons.map((reason) => (
+                              <span key={`${job.id}-${reason}`}>{reason}</span>
+                            ))}
+                          </div>
+                          <div className="job-card__meta">
+                            <span>근무지 {job.location}</span>
+                            <span>{job.employmentType}</span>
+                            <span>{job.careerType}</span>
+                            <span>모집 {job.headcount}</span>
+                          </div>
+                          <div className="portfolio-job-card__actions">
+                            <span>
+                              접수 {job.startDate} - {job.endDate}
+                            </span>
+                            <a
+                              href={job.sourceUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              공고 보기
+                              <ArrowUpRight size={15} aria-hidden="true" />
+                            </a>
+                          </div>
+                        </article>
+                      ),
+                    )}
                   </div>
                 ) : (
                   <p className="empty-copy">
