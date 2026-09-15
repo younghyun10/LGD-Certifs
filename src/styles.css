@@ -343,7 +343,7 @@ main {
 
 .page-header {
   width: min(1180px, calc(100% - 40px));
-  margin: 44px auto 28px;
+  margin: 24px auto 28px;
   padding: 34px 0 8px;
 }
 
