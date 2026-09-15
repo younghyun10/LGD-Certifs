@@ -151,6 +151,32 @@ main {
   font-size: 0.95rem;
 }
 
+.nav__auth {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  font-weight: 800;
+}
+
+.nav__auth span {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav__auth button {
+  min-height: 36px;
+  border: 1px solid rgba(69, 215, 193, 0.65);
+  border-radius: 8px;
+  padding: 0 12px;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.12);
+  font-weight: 900;
+  cursor: pointer;
+}
+
 .nav--solid .nav__links {
   color: #39413f;
 }
@@ -975,6 +1001,95 @@ main {
   align-items: start;
 }
 
+.auth-panel {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
+  gap: 18px;
+  align-items: start;
+  margin-bottom: 18px;
+  padding: 22px;
+  border: 1px solid #ded8cf;
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(216, 248, 240, 0.58), rgba(255, 253, 248, 0) 48%),
+    #ffffff;
+}
+
+.auth-panel h3 {
+  margin: 0 0 10px;
+  color: #111b1a;
+  font-size: 1.45rem;
+}
+
+.auth-panel p:not(.eyebrow) {
+  margin: 0;
+  color: #606966;
+  line-height: 1.7;
+}
+
+.auth-form,
+.auth-fields {
+  display: grid;
+  gap: 10px;
+}
+
+.auth-tabs,
+.social-login-row,
+.auth-status {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.auth-tabs button,
+.auth-fields button,
+.social-login-row button,
+.auth-status button {
+  min-height: 42px;
+  border: 1px solid #ded8cf;
+  border-radius: 8px;
+  padding: 0 14px;
+  background: #ffffff;
+  color: #39413f;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.auth-tabs button.is-active,
+.auth-fields button {
+  color: #06201d;
+  background: #45d7c1;
+  border-color: #45d7c1;
+}
+
+.auth-fields input {
+  min-height: 46px;
+  border: 1px solid #d8d1c6;
+  border-radius: 8px;
+  padding: 0 13px;
+  color: #17201f;
+  background: #fffdf8;
+}
+
+.auth-status {
+  align-items: center;
+  justify-content: end;
+}
+
+.auth-status span {
+  color: #0e827a;
+  font-weight: 900;
+}
+
+.auth-message {
+  grid-column: 1 / -1;
+  padding: 12px 14px;
+  border-radius: 8px;
+  color: #0b716b;
+  background: #e1f6ef;
+  font-weight: 800;
+}
+
 .portfolio-builder,
 .owned-panel,
 .industry-match-panel,
@@ -1006,6 +1121,12 @@ main {
   background: #fffdf8;
   text-align: left;
   cursor: pointer;
+}
+
+.owned-search-results button:disabled,
+.search-box input:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .owned-search-results button:hover {
@@ -1184,6 +1305,7 @@ main {
   .workspace,
   .roadmap-panel,
   .portfolio-layout,
+  .auth-panel,
   .home-actions,
   .story,
   .detail-columns {

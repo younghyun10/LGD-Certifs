@@ -32,6 +32,22 @@ import type { CatalogResponse, Certification, Industry, IndustryId } from "./typ
 
 type View = "home" | "explore" | "schedule" | "roadmap" | "portfolio";
 
+type AuthProvider = "local" | "google" | "kakao";
+
+type AuthUser = {
+  id: string;
+  email: string;
+  name: string;
+  provider: AuthProvider;
+};
+
+type StoredUser = AuthUser & {
+  password: string;
+};
+
+const AUTH_SESSION_KEY = "certimap-auth-session";
+const AUTH_USERS_KEY = "certimap-auth-users";
+
 const iconByIndustry: Record<IndustryId, typeof Cpu> = {
   it: Cpu,
   health: HeartPulse,
@@ -387,6 +403,27 @@ function getOverlapScore(source: Certification[], target: Certification) {
     .filter((word) => ownedWords.has(word)).length;
 }
 
+function readJson<T>(key: string, fallback: T): T {
+  try {
+    const value = window.localStorage.getItem(key);
+    return value ? (JSON.parse(value) as T) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function getStoredUsers() {
+  return readJson<StoredUser[]>(AUTH_USERS_KEY, []);
+}
+
+function saveStoredUsers(users: StoredUser[]) {
+  window.localStorage.setItem(AUTH_USERS_KEY, JSON.stringify(users));
+}
+
+function getOwnedStorageKey(userId: string) {
+  return `certimap-owned-certifications:${userId}`;
+}
+
 type CertificationDetailPanelProps = {
   certification: Certification;
   industryName?: string;
@@ -483,6 +520,14 @@ export function App() {
   const [selectedGoalId, setSelectedGoalId] = useState(roadmapGoals[0].id);
   const [ownedQuery, setOwnedQuery] = useState("");
   const [ownedCertificationIds, setOwnedCertificationIds] = useState<string[]>([]);
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null);
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [authMessage, setAuthMessage] = useState("");
+  const [authForm, setAuthForm] = useState({
+    email: "",
+    name: "",
+    password: ""
+  });
   const roadmapDetailRef = useRef<HTMLElement | null>(null);
 
   function navigate(nextView: View) {
@@ -501,6 +546,79 @@ export function App() {
     }, 0);
   }
 
+  function handleAuthSubmit() {
+    const email = authForm.email.trim().toLowerCase();
+    const name = authForm.name.trim();
+    const password = authForm.password.trim();
+
+    if (!email || !password || (authMode === "signup" && !name)) {
+      setAuthMessage("이메일, 비밀번호, 이름을 입력해주세요.");
+      return;
+    }
+
+    const users = getStoredUsers();
+    const existingUser = users.find((user) => user.email === email);
+
+    if (authMode === "signup") {
+      if (existingUser) {
+        setAuthMessage("이미 가입된 이메일입니다. 로그인으로 전환해주세요.");
+        return;
+      }
+
+      const newUser: StoredUser = {
+        id: crypto.randomUUID(),
+        email,
+        name,
+        password,
+        provider: "local"
+      };
+
+      saveStoredUsers([...users, newUser]);
+      const sessionUser: AuthUser = {
+        id: newUser.id,
+        email: newUser.email,
+        name: newUser.name,
+        provider: newUser.provider
+      };
+      window.localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(sessionUser));
+      setAuthUser(sessionUser);
+      setAuthMessage("회원가입과 로그인이 완료되었습니다.");
+      setAuthForm({ email: "", name: "", password: "" });
+      return;
+    }
+
+    if (!existingUser || existingUser.password !== password) {
+      setAuthMessage("이메일 또는 비밀번호가 맞지 않습니다.");
+      return;
+    }
+
+    const sessionUser: AuthUser = {
+      id: existingUser.id,
+      email: existingUser.email,
+      name: existingUser.name,
+      provider: existingUser.provider
+    };
+    window.localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(sessionUser));
+    setAuthUser(sessionUser);
+    setAuthMessage("로그인되었습니다.");
+    setAuthForm({ email: "", name: "", password: "" });
+  }
+
+  function handleLogout() {
+    window.localStorage.removeItem(AUTH_SESSION_KEY);
+    setAuthUser(null);
+    setOwnedCertificationIds([]);
+    setAuthMessage("로그아웃되었습니다.");
+  }
+
+  function handleSocialLogin(provider: "google" | "kakao") {
+    setAuthMessage(
+      provider === "google"
+        ? "Google 로그인은 무료 구간이 있지만, Google OAuth 클라이언트 ID 설정 후 활성화할 수 있습니다."
+        : "카카오 로그인은 무료 API로 사용할 수 있지만, 카카오 REST API 키와 리다이렉트 URI 설정 후 활성화할 수 있습니다."
+    );
+  }
+
   useEffect(() => {
     requestCatalog()
       .then((data: CatalogResponse) => {
@@ -517,6 +635,23 @@ export function App() {
     window.addEventListener("hashchange", syncHash);
     return () => window.removeEventListener("hashchange", syncHash);
   }, []);
+
+  useEffect(() => {
+    setAuthUser(readJson<AuthUser | null>(AUTH_SESSION_KEY, null));
+  }, []);
+
+  useEffect(() => {
+    if (!authUser) return;
+    setOwnedCertificationIds(readJson<string[]>(getOwnedStorageKey(authUser.id), []));
+  }, [authUser]);
+
+  useEffect(() => {
+    if (!authUser) return;
+    window.localStorage.setItem(
+      getOwnedStorageKey(authUser.id),
+      JSON.stringify(ownedCertificationIds)
+    );
+  }, [authUser, ownedCertificationIds]);
 
   const industries = catalog?.industries ?? [];
   const certifications = catalog?.certifications ?? [];
@@ -673,6 +808,11 @@ export function App() {
   }, [certifications, ownedCertificationIds, ownedCertifications]);
 
   function addOwnedCertification(certificationId: string) {
+    if (!authUser) {
+      setAuthMessage("로그인하면 보유 자격증을 저장할 수 있습니다.");
+      return;
+    }
+
     setOwnedCertificationIds((current) =>
       current.includes(certificationId) ? current : [...current, certificationId]
     );
@@ -701,6 +841,16 @@ export function App() {
               {viewLabels[item]}
             </button>
           ))}
+        </div>
+        <div className="nav__auth">
+          {authUser ? (
+            <>
+              <span>{authUser.name}</span>
+              <button type="button" onClick={handleLogout}>로그아웃</button>
+            </>
+          ) : (
+            <button type="button" onClick={() => navigate("portfolio")}>로그인</button>
+          )}
         </div>
       </nav>
 
@@ -1038,6 +1188,73 @@ export function App() {
             </p>
           </div>
 
+          <section className="auth-panel" aria-label="로그인">
+            <div>
+              <p className="eyebrow">Account</p>
+              <h3>{authUser ? `${authUser.name}님의 보유 자격 데이터` : "로그인하고 보유 자격 데이터를 저장하세요"}</h3>
+              <p>
+                {authUser
+                  ? "등록한 자격증은 이 브라우저의 계정 데이터에 저장되어 다음 접속 때 다시 불러옵니다."
+                  : "카카오·구글 로그인은 앱 키 설정 후 연결할 수 있고, 현재는 자체 로그인으로 저장 기능을 사용할 수 있습니다."}
+              </p>
+            </div>
+
+            {authUser ? (
+              <div className="auth-status">
+                <span>{authUser.email}</span>
+                <button type="button" onClick={handleLogout}>로그아웃</button>
+              </div>
+            ) : (
+              <div className="auth-form">
+                <div className="auth-tabs">
+                  <button
+                    className={authMode === "login" ? "is-active" : ""}
+                    type="button"
+                    onClick={() => setAuthMode("login")}
+                  >
+                    로그인
+                  </button>
+                  <button
+                    className={authMode === "signup" ? "is-active" : ""}
+                    type="button"
+                    onClick={() => setAuthMode("signup")}
+                  >
+                    회원가입
+                  </button>
+                </div>
+                <div className="auth-fields">
+                  {authMode === "signup" && (
+                    <input
+                      value={authForm.name}
+                      onChange={(event) => setAuthForm((current) => ({ ...current, name: event.target.value }))}
+                      placeholder="이름"
+                    />
+                  )}
+                  <input
+                    value={authForm.email}
+                    onChange={(event) => setAuthForm((current) => ({ ...current, email: event.target.value }))}
+                    placeholder="이메일"
+                    type="email"
+                  />
+                  <input
+                    value={authForm.password}
+                    onChange={(event) => setAuthForm((current) => ({ ...current, password: event.target.value }))}
+                    placeholder="비밀번호"
+                    type="password"
+                  />
+                  <button type="button" onClick={handleAuthSubmit}>
+                    {authMode === "login" ? "로그인" : "회원가입"}
+                  </button>
+                </div>
+                <div className="social-login-row">
+                  <button type="button" onClick={() => handleSocialLogin("kakao")}>카카오 로그인 준비</button>
+                  <button type="button" onClick={() => handleSocialLogin("google")}>Google 로그인 준비</button>
+                </div>
+              </div>
+            )}
+            {authMessage && <p className="auth-message">{authMessage}</p>}
+          </section>
+
           <div className="portfolio-layout">
             <section className="portfolio-builder" aria-label="보유 자격증 등록">
               <label className="search-box">
@@ -1046,6 +1263,7 @@ export function App() {
                   value={ownedQuery}
                   onChange={(event) => setOwnedQuery(event.target.value)}
                   placeholder="취득한 자격증 검색"
+                  disabled={!authUser}
                 />
               </label>
 
@@ -1057,6 +1275,7 @@ export function App() {
                       key={certification.id}
                       type="button"
                       onClick={() => addOwnedCertification(certification.id)}
+                      disabled={!authUser}
                     >
                       <span>{industry?.name}</span>
                       <strong>{certification.name}</strong>
